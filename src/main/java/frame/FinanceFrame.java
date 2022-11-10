@@ -43,7 +43,7 @@ public class FinanceFrame extends JFrame
     }
     private void createPnlTab()
     {
-        pnl = new PNLPanel();
+        pnl = new PNLPanel(currencyTypes);
         tabbedPane.addTab("PnL", pnl);
     }
 
