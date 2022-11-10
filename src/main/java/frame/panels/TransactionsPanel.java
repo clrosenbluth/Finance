@@ -3,9 +3,21 @@ package frame.panels;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class TransactionsPanel extends JPanel{
     private final String[] currencyTypes;
+    private JPanel newTransactionPanel;
+    private JTable transactionTable;
+    private JTextField transactionDateInput;
+    private JTextField vendorInput;
+    private JComboBox<String> transactionTypeInput;
+    private JTextField forwardQuantityInput;
+    private JComboBox<String> baseCurrencyInput;
+    private JTextField rateInput;
+    private JTextField maturityDateInput;
+    private JTextField forwardRateInput;
+    private JComboBox<String> foreignCurrencyInput;
 
     public TransactionsPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
@@ -33,86 +45,157 @@ public class TransactionsPanel extends JPanel{
 
     private void addNewTransactionPanel()
     {
-        JPanel newTransactionPanel = new JPanel(new FlowLayout());
+        newTransactionPanel = new JPanel(new FlowLayout());
 
+        addDate();
+        addVendor();
+        addType();
+        addForwardQuant();
+        addBaseCurrency();
+        addForeignCurrency();
+        addRate();
+        addMaturity();
+        addForwardRate();
+        addAddButton();
+
+        add(newTransactionPanel);
+    }
+
+    private void addDate()
+    {
         JPanel transactionDatePanel = new JPanel();
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
-        JTextField transactionDateInput = new JTextField();
+        transactionDateInput = new JTextField();
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
+        newTransactionPanel.add(transactionDatePanel);
+    }
 
+    private void addVendor()
+    {
         JPanel vendorPanel = new JPanel();
         vendorPanel.setLayout(new BoxLayout(vendorPanel, BoxLayout.PAGE_AXIS));
         JLabel vendor = new JLabel("Vendor");
-        JTextField vendorInput = new JTextField();
+        vendorInput = new JTextField();
         vendorPanel.add(vendor);
         vendorPanel.add(vendorInput);
+        newTransactionPanel.add(vendorPanel);
+    }
 
+    private void addType()
+    {
         JPanel transactionTypePanel = new JPanel();
         transactionTypePanel.setLayout(new BoxLayout(transactionTypePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionType = new JLabel("Transaction Type");
         String[] transactionTypes = {"Spot", "Future"};
-        JComboBox<String> transactionTypeInput = new JComboBox<>(transactionTypes);
+        transactionTypeInput = new JComboBox<>(transactionTypes);
         transactionTypeInput.setSelectedIndex((0));
         transactionTypePanel.add(transactionType);
         transactionTypePanel.add(transactionTypeInput);
+        newTransactionPanel.add(transactionTypePanel);
+    }
 
+    private void addForwardQuant()
+    {
         JPanel forwardQuantityPanel = new JPanel();
         forwardQuantityPanel.setLayout(new BoxLayout(forwardQuantityPanel, BoxLayout.PAGE_AXIS));
         JLabel forwardQuantity = new JLabel("Forward Quantity");
-        JTextField forwardQuantityInput = new JTextField();
+        forwardQuantityInput = new JTextField();
         forwardQuantityPanel.add(forwardQuantity);
         forwardQuantityPanel.add(forwardQuantityInput);
+        newTransactionPanel.add(forwardQuantityPanel);
+    }
 
+    private void addBaseCurrency()
+    {
         JPanel baseCurrencyPanel = new JPanel();
         baseCurrencyPanel.setLayout(new BoxLayout(baseCurrencyPanel, BoxLayout.PAGE_AXIS));
         JLabel baseCurrency = new JLabel("Base Currency");
-        JComboBox<String> baseCurrencyInput = new JComboBox<>(currencyTypes);
+        baseCurrencyInput = new JComboBox<>(currencyTypes);
         baseCurrencyPanel.add(baseCurrency);
         baseCurrencyPanel.add(baseCurrencyInput);
+        newTransactionPanel.add(baseCurrencyPanel);
+    }
 
+    private void addForeignCurrency()
+    {
         JPanel foreignCurrencyPanel = new JPanel();
         foreignCurrencyPanel.setLayout(new BoxLayout(foreignCurrencyPanel, BoxLayout.PAGE_AXIS));
         JLabel foreignCurrency = new JLabel("Foreign Currency");
-        JComboBox<String> foreignCurrencyInput = new JComboBox<>(currencyTypes);
+        foreignCurrencyInput = new JComboBox<>(currencyTypes);
         foreignCurrencyPanel.add(foreignCurrency);
         foreignCurrencyPanel.add(foreignCurrencyInput);
+        newTransactionPanel.add(foreignCurrencyPanel);
+    }
 
+    private void addRate()
+    {
         JPanel ratePanel = new JPanel();
         ratePanel.setLayout(new BoxLayout(ratePanel, BoxLayout.PAGE_AXIS));
         JLabel rate = new JLabel("Rate");
-        JTextField rateInput = new JTextField();
+        rateInput = new JTextField();
         ratePanel.add(rate);
         ratePanel.add(rateInput);
+        newTransactionPanel.add(ratePanel);
+    }
 
+    private void addMaturity()
+    {
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
-        JTextField maturityDateInput = new JTextField();
+        maturityDateInput = new JTextField();
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
+        newTransactionPanel.add(maturityDatePanel);
+    }
 
+    private void addForwardRate()
+    {
         JPanel forwardRatePanel = new JPanel();
         forwardRatePanel.setLayout(new BoxLayout(forwardRatePanel, BoxLayout.PAGE_AXIS));
         JLabel forwardRate = new JLabel("Forward Rate");
-        JTextField forwardRateInput = new JTextField();
+        forwardRateInput = new JTextField();
         forwardRatePanel.add(forwardRate);
         forwardRatePanel.add(forwardRateInput);
-
-        newTransactionPanel.add(transactionDatePanel);
-        newTransactionPanel.add(vendorPanel);
-        newTransactionPanel.add(transactionTypePanel);
-        newTransactionPanel.add(forwardQuantityPanel);
-        newTransactionPanel.add(baseCurrencyPanel);
-        newTransactionPanel.add(foreignCurrencyPanel);
-        newTransactionPanel.add(ratePanel);
-        newTransactionPanel.add(maturityDatePanel);
         newTransactionPanel.add(forwardRatePanel);
+    }
 
-        newTransactionPanel.add(new JButton("Add Transaction"));
+    private void addAddButton()
+    {
+        JButton add = new JButton("Add Transaction");
+        add.addActionListener(this::onAddClicked);
+        newTransactionPanel.add(add);
+    }
 
-        add(newTransactionPanel);
+    public void onAddClicked(ActionEvent event)
+    {
+        // TODO: validate
+
+        DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
+        model.addRow(new Object[] {transactionDateInput.getText(),
+                                    vendorInput.getText(),
+                                    transactionTypeInput.getSelectedItem(),
+                                    forwardQuantityInput.getText(),
+                                    baseCurrencyInput.getSelectedItem(),
+                                    foreignCurrencyInput.getSelectedItem(),
+                                    rateInput.getText(),
+                                    maturityDateInput.getText(),
+                                    forwardRateInput.getText(),
+                                    "rate goes here"});
+
+        clearFields();
+    }
+
+    private void clearFields()
+    {
+        transactionDateInput.setText("");
+        vendorInput.setText("");
+        forwardQuantityInput.setText("");
+        rateInput.setText("");
+        maturityDateInput.setText("");
+        forwardRateInput.setText("");
     }
 
     private void addTransactionsTable()
@@ -128,17 +211,12 @@ public class TransactionsPanel extends JPanel{
                 "Forward Rate",
                 "Implied Risk-Free Rate"};
 
-        int numRows = 5;
+        int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length);
         model.setColumnIdentifiers(columnNames);
 
-        String[][] data = {{"a","a","a","a","a","a","a","a","a","a"},{"s","s","s","s","s","s","s","s","s","s"}};
-
-        JTable table = new JTable(model);
-//        JTable table = new JTable(data, columnNames);
-        table.setBackground(Color.green);
-        JScrollPane sp = new JScrollPane(table);
-        sp.setBackground(Color.magenta);
+        transactionTable = new JTable(model);
+        JScrollPane sp = new JScrollPane(transactionTable);
         sp.setBounds(25, 50, 300, 300);
         add(sp);
     }
