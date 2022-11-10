@@ -1,52 +1,30 @@
+package frame.panels;
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 
-public class FinanceFrame extends JFrame
-{
-    public JTabbedPane tabbedPane;
-    public JPanel transactions;
-    public JPanel pnl;
-    public JPanel sandbox;
-    String[] currencyTypes = {"USD", "ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
+public class TransactionsPanel extends JPanel{
+    private final String[] currencyTypes;
 
-    public FinanceFrame()
-    {
-        setTitle("Finance Calculator");
-        setSize(1000, 1000);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(1,1));
-
-        addTabbedPane();
+    public TransactionsPanel(String[] currencyTypes){
+        this.currencyTypes = currencyTypes;
 
         createTransactionsTab();
         fillTransactionsTab();
-
-        createPnlTab();
-        createSandboxTab();
-
     }
 
-    private void addTabbedPane()
-    {
-        tabbedPane = new JTabbedPane();
-        add(tabbedPane);
-    }
 
     private void createTransactionsTab()
     {
-        transactions = new JPanel();
-        transactions.setLayout(new BoxLayout(transactions, BoxLayout.PAGE_AXIS));
-        tabbedPane.addTab("Transactions", transactions);
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     }
 
     private void fillTransactionsTab()
     {
         JLabel reportLabel = new JLabel();
         reportLabel.setText("Overall position: 10000 USD");
-        transactions.add(reportLabel);
+        add(reportLabel);
 
         addNewTransactionPanel();
 
@@ -134,21 +112,21 @@ public class FinanceFrame extends JFrame
 
         newTransactionPanel.add(new JButton("Add Transaction"));
 
-        transactions.add(newTransactionPanel);
+        add(newTransactionPanel);
     }
 
     private void addTransactionsTable()
     {
         String[] columnNames = {"Transaction Date",
-                                "Vendor",
-                                "Type",
-                                "Quantity",
-                                "Base Currency",
-                                "Foreign Currency",
-                                "Rate",
-                                "Maturity Date",
-                                "Forward Rate",
-                                "Implied Risk-Free Rate"};
+                "Vendor",
+                "Type",
+                "Quantity",
+                "Base Currency",
+                "Foreign Currency",
+                "Rate",
+                "Maturity Date",
+                "Forward Rate",
+                "Implied Risk-Free Rate"};
 
         int numRows = 5;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length);
@@ -162,24 +140,7 @@ public class FinanceFrame extends JFrame
         JScrollPane sp = new JScrollPane(table);
         sp.setBackground(Color.magenta);
         sp.setBounds(25, 50, 300, 300);
-        transactions.add(sp);
+        add(sp);
     }
 
-    private void createPnlTab()
-    {
-        pnl = new JPanel(new BorderLayout());
-        tabbedPane.addTab("PnL", pnl);
-    }
-
-    private void createSandboxTab()
-    {
-        sandbox = new JPanel(new BorderLayout());
-        tabbedPane.addTab("Sandbox", sandbox);
-    }
-
-    public static void main(String[] args)
-    {
-        FinanceFrame frame = new FinanceFrame();
-        frame.setVisible(true);
-    }
 }
