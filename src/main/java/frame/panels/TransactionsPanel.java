@@ -26,6 +26,7 @@ public class TransactionsPanel extends JPanel{
         fillTransactionsTab();
     }
 
+// todo: implement hasEnoughMoney() and sendErrorMessage()
 
     private void createTransactionsTab()
     {
@@ -173,19 +174,80 @@ public class TransactionsPanel extends JPanel{
     {
         // TODO: validate
 
-        DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
-        model.addRow(new Object[] {transactionDateInput.getText(),
-                                    vendorInput.getText(),
-                                    transactionTypeInput.getSelectedItem(),
-                                    forwardQuantityInput.getText(),
-                                    baseCurrencyInput.getSelectedItem(),
-                                    foreignCurrencyInput.getSelectedItem(),
-                                    rateInput.getText(),
-                                    maturityDateInput.getText(),
-                                    forwardRateInput.getText(),
-                                    "rate goes here"});
+        if (fieldsAreValid() /*&& hasEnoughMoney()*/)
+        {
+            DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
+            model.addRow(new Object[]{transactionDateInput.getText(),
+                    vendorInput.getText(),
+                    transactionTypeInput.getSelectedItem(),
+                    forwardQuantityInput.getText(),
+                    baseCurrencyInput.getSelectedItem(),
+                    foreignCurrencyInput.getSelectedItem(),
+                    rateInput.getText(),
+                    maturityDateInput.getText(),
+                    forwardRateInput.getText(),
+                    "rate goes here"});
 
-        clearFields();
+            clearFields();
+        }
+//        else
+//        {
+//            sendErrorMessage();
+//        }
+    }
+
+    private boolean fieldsAreValid()
+    {
+        boolean validTransactionDate = transactionDateInput.getText() != null;
+        // todo: also confirm that the date is today or earlier
+
+        // todo: decide if we're letting the vendor be empty
+
+        boolean validForwardQuant;
+        try
+        {
+            double forwardQuant = Double.parseDouble(forwardQuantityInput.getText());
+            validForwardQuant = forwardQuant > 0;
+            // todo: add other conditions?
+        } catch (Exception e)
+        {
+            validForwardQuant = false;
+        }
+
+        boolean validCurrencies = baseCurrencyInput.getSelectedItem() !=
+                foreignCurrencyInput.getSelectedItem();
+
+        boolean validRate;
+        try
+        {
+            double rate = Double.parseDouble(rateInput.getText());
+            validRate = true;
+            // todo: add other conditions?
+        } catch (Exception e)
+        {
+            validRate = false;
+        }
+
+        boolean validMaturityDate = maturityDateInput.getText() != null;
+        // todo: also confirm that the date is after today
+
+        boolean validForwardRate;
+        try
+        {
+            double rate = Double.parseDouble(forwardRateInput.getText());
+            validForwardRate = true;
+            // todo: add other conditions?
+        } catch (Exception e)
+        {
+            validForwardRate = false;
+        }
+
+        return validTransactionDate
+                && validForwardQuant
+                && validCurrencies
+                && validRate
+                && validMaturityDate
+                && validForwardRate;
     }
 
     private void clearFields()
