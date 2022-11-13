@@ -26,7 +26,7 @@ public class TransactionsPanel extends JPanel{
         fillTransactionsTab();
     }
 
-// todo: implement hasEnoughMoney() and sendErrorMessage()
+// todo: use JFormattedTextField
 
     private void createTransactionsTab()
     {

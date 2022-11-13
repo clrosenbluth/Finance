@@ -49,7 +49,7 @@ public class FinanceFrame extends JFrame
 
     private void createSandboxTab()
     {
-        sandbox = new SandboxPanel();
+        sandbox = new SandboxPanel(currencyTypes);
         tabbedPane.addTab("Sandbox", sandbox);
     }
 
