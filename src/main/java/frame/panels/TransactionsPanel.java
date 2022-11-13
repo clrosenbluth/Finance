@@ -172,9 +172,7 @@ public class TransactionsPanel extends JPanel{
 
     public void onAddClicked(ActionEvent event)
     {
-        // TODO: validate
-
-        if (fieldsAreValid() /*&& hasEnoughMoney()*/)
+        if (fieldsAreValid() && hasEnoughMoney())
         {
             DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
             model.addRow(new Object[]{transactionDateInput.getText(),
@@ -190,10 +188,22 @@ public class TransactionsPanel extends JPanel{
 
             clearFields();
         }
-//        else
-//        {
-//            sendErrorMessage();
-//        }
+        else
+        {
+            sendErrorMessage();
+        }
+    }
+
+    private void sendErrorMessage()
+    {
+        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+                "Error message", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private boolean hasEnoughMoney()
+    {
+        // TODO: implement
+        return true;
     }
 
     private boolean fieldsAreValid()
