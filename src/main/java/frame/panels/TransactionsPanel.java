@@ -143,6 +143,7 @@ public class TransactionsPanel extends JPanel{
 
     private void addMaturity()
     {
+        // TODO: disable if spot is selected
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
@@ -154,6 +155,7 @@ public class TransactionsPanel extends JPanel{
 
     private void addForwardRate()
     {
+        // TODO: disable if spot is selected
         JPanel forwardRatePanel = new JPanel();
         forwardRatePanel.setLayout(new BoxLayout(forwardRatePanel, BoxLayout.PAGE_AXIS));
         JLabel forwardRate = new JLabel("Forward Rate");
