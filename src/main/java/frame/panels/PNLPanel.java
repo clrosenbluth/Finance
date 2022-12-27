@@ -24,7 +24,7 @@ public class PNLPanel extends JPanel{
                 "Foreign Currency Details",
                 "Total USD Value in FX",
                 "PnL for all Currencies",
-                "Remaining USD Value from Orginal Investment"
+                "Remaining USD Value from Original Investment"
         };
         int rows = 5;
         DefaultTableModel model = new DefaultTableModel(rows, columnNames.length);
