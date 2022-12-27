@@ -15,7 +15,6 @@ public class TransactionsPanel extends JPanel{
     private JTextField quantityInput;
     private JTextField rateInput;
     private JTextField maturityDateInput;
-    private JTextField forwardRateInput;
     private JComboBox<String> foreignCurrencyInput;
 
     public TransactionsPanel(String[] currencyTypes){
@@ -50,11 +49,10 @@ public class TransactionsPanel extends JPanel{
         addDate();
         addVendor();
         addType();
-        addForwardQuant();
+        addQuant();
         addForeignCurrency();
         addRate();
         addMaturity();
-        addForwardRate();
         addAddButton();
 
         add(newTransactionPanel);
@@ -95,7 +93,7 @@ public class TransactionsPanel extends JPanel{
         newTransactionPanel.add(transactionTypePanel);
     }
 
-    private void addForwardQuant()
+    private void addQuant()
     {
         JPanel quantityPanel = new JPanel();
         quantityPanel.setLayout(new BoxLayout(quantityPanel, BoxLayout.PAGE_AXIS));
@@ -140,18 +138,6 @@ public class TransactionsPanel extends JPanel{
         newTransactionPanel.add(maturityDatePanel);
     }
 
-    private void addForwardRate()
-    {
-        // TODO: disable if spot is selected
-        JPanel forwardRatePanel = new JPanel();
-        forwardRatePanel.setLayout(new BoxLayout(forwardRatePanel, BoxLayout.PAGE_AXIS));
-        JLabel forwardRate = new JLabel("Forward Rate");
-        forwardRateInput = new JTextField();
-        forwardRatePanel.add(forwardRate);
-        forwardRatePanel.add(forwardRateInput);
-        newTransactionPanel.add(forwardRatePanel);
-    }
-
     private void addAddButton()
     {
         JButton add = new JButton("Add Transaction");
@@ -171,7 +157,6 @@ public class TransactionsPanel extends JPanel{
                     foreignCurrencyInput.getSelectedItem(),
                     rateInput.getText(),
                     maturityDateInput.getText(),
-                    forwardRateInput.getText(),
                     "rate goes here"});
 
             clearFields();
@@ -201,15 +186,15 @@ public class TransactionsPanel extends JPanel{
 
         // todo: decide if we're letting the vendor be empty
 
-        boolean validForwardQuant;
+        boolean validQuant;
         try
         {
             double quant = Double.parseDouble(quantityInput.getText());
-            validForwardQuant = quant > 0;
+            validQuant = quant > 0;
             // todo: add other conditions?
         } catch (Exception e)
         {
-            validForwardQuant = false;
+            validQuant = false;
         }
 
         boolean validRate;
@@ -226,22 +211,10 @@ public class TransactionsPanel extends JPanel{
         boolean validMaturityDate = maturityDateInput.getText() != null;
         // todo: also confirm that the date is after today
 
-        boolean validForwardRate;
-        try
-        {
-            double rate = Double.parseDouble(forwardRateInput.getText());
-            validForwardRate = true;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validForwardRate = false;
-        }
-
         return validTransactionDate
-                && validForwardQuant
+                && validQuant
                 && validRate
-                && validMaturityDate
-                && validForwardRate;
+                && validMaturityDate;
     }
 
     private void clearFields()
@@ -251,7 +224,6 @@ public class TransactionsPanel extends JPanel{
         quantityInput.setText("");
         rateInput.setText("");
         maturityDateInput.setText("");
-        forwardRateInput.setText("");
     }
 
     private void addTransactionsTable()
@@ -263,7 +235,6 @@ public class TransactionsPanel extends JPanel{
                 "Foreign Currency",
                 "Rate",
                 "Maturity Date",
-                "Forward Rate",
                 "Implied Risk-Free Rate"};
 
         int numRows = 0;
