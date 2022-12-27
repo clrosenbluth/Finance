@@ -12,7 +12,7 @@ public class SandboxPanel extends JPanel{
     private JTextField transactionDateInput;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
-    private JTextField forwardQuantityInput;
+    private JTextField quantityInput;
     private JTextField rateInput;
     private JTextField maturityDateInput;
     private JTextField forwardRateInput;
@@ -95,13 +95,13 @@ public class SandboxPanel extends JPanel{
 
     private void addForwardQuant()
     {
-        JPanel forwardQuantityPanel = new JPanel();
-        forwardQuantityPanel.setLayout(new BoxLayout(forwardQuantityPanel, BoxLayout.PAGE_AXIS));
-        JLabel forwardQuantity = new JLabel("Forward Quantity");
-        forwardQuantityInput = new JTextField();
-        forwardQuantityPanel.add(forwardQuantity);
-        forwardQuantityPanel.add(forwardQuantityInput);
-        newTransactionPanel.add(forwardQuantityPanel);
+        JPanel quantityPanel = new JPanel();
+        quantityPanel.setLayout(new BoxLayout(quantityPanel, BoxLayout.PAGE_AXIS));
+        JLabel quantity = new JLabel("Quantity");
+        quantityInput = new JTextField();
+        quantityPanel.add(quantity);
+        quantityPanel.add(quantityInput);
+        newTransactionPanel.add(quantityPanel);
     }
 
 
@@ -166,7 +166,7 @@ public class SandboxPanel extends JPanel{
             model.addRow(new Object[]{transactionDateInput.getText(),
                     vendorInput.getText(),
                     transactionTypeInput.getSelectedItem(),
-                    forwardQuantityInput.getText(),
+                    quantityInput.getText(),
                     foreignCurrencyInput.getSelectedItem(),
                     rateInput.getText(),
                     maturityDateInput.getText(),
@@ -203,7 +203,7 @@ public class SandboxPanel extends JPanel{
         boolean validForwardQuant;
         try
         {
-            double forwardQuant = Double.parseDouble(forwardQuantityInput.getText());
+            double forwardQuant = Double.parseDouble(quantityInput.getText());
             validForwardQuant = forwardQuant > 0;
             // todo: add other conditions?
         } catch (Exception e)
@@ -247,7 +247,7 @@ public class SandboxPanel extends JPanel{
     {
         transactionDateInput.setText("");
         vendorInput.setText("");
-        forwardQuantityInput.setText("");
+        quantityInput.setText("");
         rateInput.setText("");
         maturityDateInput.setText("");
         forwardRateInput.setText("");
