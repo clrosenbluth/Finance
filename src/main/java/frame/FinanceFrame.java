@@ -17,7 +17,7 @@ public class FinanceFrame extends JFrame
 
     public FinanceFrame()
     {
-        setTitle("Finance Calculator");
+        setTitle("FX Position Tracker");
         setSize(1000, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1,1));
