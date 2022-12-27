@@ -13,7 +13,6 @@ public class SandboxPanel extends JPanel{
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
     private JTextField forwardQuantityInput;
-    private JComboBox<String> baseCurrencyInput;
     private JTextField rateInput;
     private JTextField maturityDateInput;
     private JTextField forwardRateInput;
@@ -50,7 +49,6 @@ public class SandboxPanel extends JPanel{
         addVendor();
         addType();
         addForwardQuant();
-        addBaseCurrency();
         addForeignCurrency();
         addRate();
         addMaturity();
@@ -106,16 +104,6 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(forwardQuantityPanel);
     }
 
-    private void addBaseCurrency()
-    {
-        JPanel baseCurrencyPanel = new JPanel();
-        baseCurrencyPanel.setLayout(new BoxLayout(baseCurrencyPanel, BoxLayout.PAGE_AXIS));
-        JLabel baseCurrency = new JLabel("Base Currency");
-        baseCurrencyInput = new JComboBox<>(currencyTypes);
-        baseCurrencyPanel.add(baseCurrency);
-        baseCurrencyPanel.add(baseCurrencyInput);
-        newTransactionPanel.add(baseCurrencyPanel);
-    }
 
     private void addForeignCurrency()
     {
@@ -179,7 +167,6 @@ public class SandboxPanel extends JPanel{
                     vendorInput.getText(),
                     transactionTypeInput.getSelectedItem(),
                     forwardQuantityInput.getText(),
-                    baseCurrencyInput.getSelectedItem(),
                     foreignCurrencyInput.getSelectedItem(),
                     rateInput.getText(),
                     maturityDateInput.getText(),
@@ -224,9 +211,6 @@ public class SandboxPanel extends JPanel{
             validForwardQuant = false;
         }
 
-        boolean validCurrencies = baseCurrencyInput.getSelectedItem() !=
-                foreignCurrencyInput.getSelectedItem();
-
         boolean validRate;
         try
         {
@@ -254,7 +238,6 @@ public class SandboxPanel extends JPanel{
 
         return validTransactionDate
                 && validForwardQuant
-                && validCurrencies
                 && validRate
                 && validMaturityDate
                 && validForwardRate;
@@ -276,7 +259,6 @@ public class SandboxPanel extends JPanel{
                 "Vendor",
                 "Type",
                 "Quantity",
-                "Base Currency",
                 "Foreign Currency",
                 "Rate",
                 "Maturity Date",
