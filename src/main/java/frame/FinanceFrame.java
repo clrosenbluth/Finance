@@ -13,7 +13,7 @@ public class FinanceFrame extends JFrame
     public JPanel transactions;
     public JPanel pnl;
     public JPanel sandbox;
-    String[] currencyTypes = {"USD", "ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
+    String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
 
     public FinanceFrame()
     {

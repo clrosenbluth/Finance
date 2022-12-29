@@ -12,11 +12,9 @@ public class TransactionsPanel extends JPanel{
     private JTextField transactionDateInput;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
-    private JTextField forwardQuantityInput;
-    private JComboBox<String> baseCurrencyInput;
+    private JTextField quantityInput;
     private JTextField rateInput;
     private JTextField maturityDateInput;
-    private JTextField forwardRateInput;
     private JComboBox<String> foreignCurrencyInput;
 
     public TransactionsPanel(String[] currencyTypes){
@@ -51,12 +49,10 @@ public class TransactionsPanel extends JPanel{
         addDate();
         addVendor();
         addType();
-        addForwardQuant();
-        addBaseCurrency();
+        addQuant();
         addForeignCurrency();
         addRate();
         addMaturity();
-        addForwardRate();
         addAddButton();
 
         add(newTransactionPanel);
@@ -97,26 +93,15 @@ public class TransactionsPanel extends JPanel{
         newTransactionPanel.add(transactionTypePanel);
     }
 
-    private void addForwardQuant()
+    private void addQuant()
     {
-        JPanel forwardQuantityPanel = new JPanel();
-        forwardQuantityPanel.setLayout(new BoxLayout(forwardQuantityPanel, BoxLayout.PAGE_AXIS));
-        JLabel forwardQuantity = new JLabel("Forward Quantity");
-        forwardQuantityInput = new JTextField();
-        forwardQuantityPanel.add(forwardQuantity);
-        forwardQuantityPanel.add(forwardQuantityInput);
-        newTransactionPanel.add(forwardQuantityPanel);
-    }
-
-    private void addBaseCurrency()
-    {
-        JPanel baseCurrencyPanel = new JPanel();
-        baseCurrencyPanel.setLayout(new BoxLayout(baseCurrencyPanel, BoxLayout.PAGE_AXIS));
-        JLabel baseCurrency = new JLabel("Base Currency");
-        baseCurrencyInput = new JComboBox<>(currencyTypes);
-        baseCurrencyPanel.add(baseCurrency);
-        baseCurrencyPanel.add(baseCurrencyInput);
-        newTransactionPanel.add(baseCurrencyPanel);
+        JPanel quantityPanel = new JPanel();
+        quantityPanel.setLayout(new BoxLayout(quantityPanel, BoxLayout.PAGE_AXIS));
+        JLabel quantity = new JLabel("Quantity");
+        quantityInput = new JTextField();
+        quantityPanel.add(quantity);
+        quantityPanel.add(quantityInput);
+        newTransactionPanel.add(quantityPanel);
     }
 
     private void addForeignCurrency()
@@ -153,18 +138,6 @@ public class TransactionsPanel extends JPanel{
         newTransactionPanel.add(maturityDatePanel);
     }
 
-    private void addForwardRate()
-    {
-        // TODO: disable if spot is selected
-        JPanel forwardRatePanel = new JPanel();
-        forwardRatePanel.setLayout(new BoxLayout(forwardRatePanel, BoxLayout.PAGE_AXIS));
-        JLabel forwardRate = new JLabel("Forward Rate");
-        forwardRateInput = new JTextField();
-        forwardRatePanel.add(forwardRate);
-        forwardRatePanel.add(forwardRateInput);
-        newTransactionPanel.add(forwardRatePanel);
-    }
-
     private void addAddButton()
     {
         JButton add = new JButton("Add Transaction");
@@ -180,12 +153,10 @@ public class TransactionsPanel extends JPanel{
             model.addRow(new Object[]{transactionDateInput.getText(),
                     vendorInput.getText(),
                     transactionTypeInput.getSelectedItem(),
-                    forwardQuantityInput.getText(),
-                    baseCurrencyInput.getSelectedItem(),
+                    quantityInput.getText(),
                     foreignCurrencyInput.getSelectedItem(),
                     rateInput.getText(),
                     maturityDateInput.getText(),
-                    forwardRateInput.getText(),
                     "rate goes here"});
 
             clearFields();
@@ -215,19 +186,16 @@ public class TransactionsPanel extends JPanel{
 
         // todo: decide if we're letting the vendor be empty
 
-        boolean validForwardQuant;
+        boolean validQuant;
         try
         {
-            double forwardQuant = Double.parseDouble(forwardQuantityInput.getText());
-            validForwardQuant = forwardQuant > 0;
+            double quant = Double.parseDouble(quantityInput.getText());
+            validQuant = quant > 0;
             // todo: add other conditions?
         } catch (Exception e)
         {
-            validForwardQuant = false;
+            validQuant = false;
         }
-
-        boolean validCurrencies = baseCurrencyInput.getSelectedItem() !=
-                foreignCurrencyInput.getSelectedItem();
 
         boolean validRate;
         try
@@ -243,33 +211,19 @@ public class TransactionsPanel extends JPanel{
         boolean validMaturityDate = maturityDateInput.getText() != null;
         // todo: also confirm that the date is after today
 
-        boolean validForwardRate;
-        try
-        {
-            double rate = Double.parseDouble(forwardRateInput.getText());
-            validForwardRate = true;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validForwardRate = false;
-        }
-
         return validTransactionDate
-                && validForwardQuant
-                && validCurrencies
+                && validQuant
                 && validRate
-                && validMaturityDate
-                && validForwardRate;
+                && validMaturityDate;
     }
 
     private void clearFields()
     {
         transactionDateInput.setText("");
         vendorInput.setText("");
-        forwardQuantityInput.setText("");
+        quantityInput.setText("");
         rateInput.setText("");
         maturityDateInput.setText("");
-        forwardRateInput.setText("");
     }
 
     private void addTransactionsTable()
@@ -278,11 +232,9 @@ public class TransactionsPanel extends JPanel{
                 "Vendor",
                 "Type",
                 "Quantity",
-                "Base Currency",
                 "Foreign Currency",
                 "Rate",
                 "Maturity Date",
-                "Forward Rate",
                 "Implied Risk-Free Rate"};
 
         int numRows = 0;
