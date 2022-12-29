@@ -6,6 +6,8 @@ import frame.panels.TransactionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class FinanceFrame extends JFrame
 {
@@ -14,6 +16,7 @@ public class FinanceFrame extends JFrame
     public JPanel pnl;
     public JPanel sandbox;
     String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
+    Connection connection;
 
     public FinanceFrame()
     {
@@ -28,6 +31,17 @@ public class FinanceFrame extends JFrame
         createPnlTab();
         createSandboxTab();
 
+        try
+        {
+            //  todo: insert password, but do not push
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/finance",
+                    "root",
+                    "");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     private void addTabbedPane()
@@ -38,18 +52,18 @@ public class FinanceFrame extends JFrame
 
     private void createTransactionsTab()
     {
-        transactions = new TransactionsPanel(currencyTypes);
+        transactions = new TransactionsPanel(currencyTypes, connection);
         tabbedPane.addTab("Transactions", transactions);
     }
     private void createPnlTab()
     {
-        pnl = new PNLPanel();
+        pnl = new PNLPanel(connection);
         tabbedPane.addTab("PnL", pnl);
     }
 
     private void createSandboxTab()
     {
-        sandbox = new SandboxPanel(currencyTypes);
+        sandbox = new SandboxPanel(currencyTypes, connection);
         tabbedPane.addTab("Sandbox", sandbox);
     }
 

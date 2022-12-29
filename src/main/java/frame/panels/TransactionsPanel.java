@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 
 public class TransactionsPanel extends JPanel{
     private final String[] currencyTypes;
@@ -17,8 +18,11 @@ public class TransactionsPanel extends JPanel{
     private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
 
-    public TransactionsPanel(String[] currencyTypes){
+    private Connection connection;
+
+    public TransactionsPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
+        this.connection = connection;
 
         createTransactionsTab();
         fillTransactionsTab();

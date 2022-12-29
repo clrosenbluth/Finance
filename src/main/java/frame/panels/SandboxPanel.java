@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 
 public class SandboxPanel extends JPanel{
     private final String[] currencyTypes;
@@ -17,8 +18,11 @@ public class SandboxPanel extends JPanel{
     private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
 
-    public SandboxPanel(String[] currencyTypes){
+    private Connection connection;
+
+    public SandboxPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
+        this.connection = connection;
 
         createSandboxTab();
         fillSandboxTab();
