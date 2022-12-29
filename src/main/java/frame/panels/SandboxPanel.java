@@ -157,6 +157,7 @@ public class SandboxPanel extends JPanel{
                     rateInput.getText(),
                     maturityDateInput.getText(),
                     "rate goes here"});
+            // todo: use rate calculator
 
             clearFields();
         }
