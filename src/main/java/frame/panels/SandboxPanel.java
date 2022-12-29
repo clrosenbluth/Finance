@@ -17,12 +17,14 @@ public class SandboxPanel extends JPanel{
     private JComboBox<String> transactionTypeInput;
     private JTextField quantityInput;
     private JTextField rateInput;
-    private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
 
     public DatePicker transactionDateInput;
-    private DatePickerSettings dateSettings;
+    private DatePickerSettings transactionDateSettings;
     private final LocalDate first = LocalDate.of(2012, 1, 1);
+
+    public DatePicker maturityDateInput;
+    private DatePickerSettings maturityDateSettings;
 
     public SandboxPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
@@ -68,9 +70,9 @@ public class SandboxPanel extends JPanel{
         JPanel transactionDatePanel = new JPanel();
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
-        dateSettings = new DatePickerSettings();
-        transactionDateInput = new DatePicker(dateSettings);
-        dateSettings.setDateRangeLimits(first, LocalDate.now());//what should the range be?
+        transactionDateSettings = new DatePickerSettings();
+        transactionDateInput = new DatePicker(transactionDateSettings);
+        transactionDateSettings.setDateRangeLimits(first, LocalDate.now());//what should the range be?
         transactionDateInput.setDateToToday();
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
@@ -141,7 +143,10 @@ public class SandboxPanel extends JPanel{
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
-        maturityDateInput = new JTextField();
+        maturityDateSettings = new DatePickerSettings();
+        maturityDateInput = new DatePicker(maturityDateSettings);
+        maturityDateSettings.setDateRangeLimits(first, LocalDate.now().plusYears(10));//what should the range be?
+        maturityDateInput.setDateToToday();
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
