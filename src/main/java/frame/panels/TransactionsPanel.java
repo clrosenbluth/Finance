@@ -232,6 +232,7 @@ public class TransactionsPanel extends JPanel{
 
     private void addTransactionsTable()
     {
+        // todo: add transactions from database
         String[] columnNames = {"Transaction Date",
                 "Vendor",
                 "Type",
