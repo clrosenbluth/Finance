@@ -4,6 +4,7 @@ import frame.panels.PNLPanel;
 import frame.panels.SandboxPanel;
 import frame.panels.TransactionsPanel;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,6 +16,7 @@ public class FinanceFrame extends JFrame
     public JPanel sandbox;
     String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
 
+    @Inject
     public FinanceFrame()
     {
         setTitle("FX Position Tracker");
