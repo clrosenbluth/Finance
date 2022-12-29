@@ -40,7 +40,6 @@ public class MyJDBC
             // Using stored procedure: insert_transaction()
             String vendor = "IBM";
             Float quantity = 200.5f;
-            Float price = 35.5f;
             String type = "spot";
             String currency = "ILS";
             Float rate = 35.5f;
@@ -50,11 +49,10 @@ public class MyJDBC
             CallableStatement stmt = connection.prepareCall(query);
             stmt.setString(1, vendor);
             stmt.setFloat(2, quantity);
-            stmt.setFloat(3, price);
-            stmt.setString(4, type);
-            stmt.setString(5, currency);
-            stmt.setFloat(6, rate);
-            stmt.setDate(7, maturity);
+            stmt.setString(3, type);
+            stmt.setString(4, currency);
+            stmt.setFloat(5, rate);
+            stmt.setDate(6, maturity);
 
             boolean hadResults = stmt.execute();
 
