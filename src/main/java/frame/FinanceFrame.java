@@ -13,7 +13,7 @@ public class FinanceFrame extends JFrame
     public JPanel transactions;
     public JPanel pnl;
     public JPanel sandbox;
-    String[] currencyTypes = {"USD", "ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
+    String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
 
     public FinanceFrame()
     {
@@ -49,7 +49,7 @@ public class FinanceFrame extends JFrame
 
     private void createSandboxTab()
     {
-        sandbox = new SandboxPanel();
+        sandbox = new SandboxPanel(currencyTypes);
         tabbedPane.addTab("Sandbox", sandbox);
     }
 
