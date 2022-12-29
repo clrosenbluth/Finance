@@ -4,18 +4,25 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 
 public class SandboxPanel extends JPanel{
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
     private JTable transactionTable;
-    private JTextField transactionDateInput;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
     private JTextField quantityInput;
     private JTextField rateInput;
     private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
+
+    public DatePicker transactionDateInput;
+    private DatePickerSettings dateSettings;
+    private final LocalDate first = LocalDate.of(2012, 1, 1);
 
     public SandboxPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
@@ -61,7 +68,10 @@ public class SandboxPanel extends JPanel{
         JPanel transactionDatePanel = new JPanel();
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
-        transactionDateInput = new JTextField();
+        dateSettings = new DatePickerSettings();
+        transactionDateInput = new DatePicker(dateSettings);
+        dateSettings.setDateRangeLimits(first, LocalDate.now());//what should the range be?
+        transactionDateInput.setDateToToday();
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
         newTransactionPanel.add(transactionDatePanel);
