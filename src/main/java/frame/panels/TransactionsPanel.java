@@ -163,6 +163,8 @@ public class TransactionsPanel extends JPanel{
                     maturityDateInput.getText(),
                     "rate goes here"});
 
+            // todo: add to database
+
             clearFields();
         }
         else
