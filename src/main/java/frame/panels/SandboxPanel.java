@@ -21,7 +21,7 @@ public class SandboxPanel extends JPanel{
 
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
-    private final LocalDate first = LocalDate.of(2012, 1, 1);
+    private final LocalDate first = LocalDate.of(2012, 1, 1);//confirm
 
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
