@@ -18,8 +18,7 @@ public class TransactionsPanel extends JPanel{
     private JTextField quantityInput;
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
-    public DatePicker transactionDateInput;
-    private DatePickerSettings transactionDateSettings;
+    public JTextField transactionDateInput;
     private final LocalDate first = LocalDate.of(2012, 1, 1);//confirm
 
     public DatePicker maturityDateInput;
@@ -70,10 +69,9 @@ public class TransactionsPanel extends JPanel{
         JPanel transactionDatePanel = new JPanel();
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
-        transactionDateSettings = new DatePickerSettings();
-        transactionDateInput = new DatePicker(transactionDateSettings);
-        transactionDateSettings.setDateRangeLimits(first, LocalDate.now());//what should the range be?
-        transactionDateInput.setDateToToday();
+        transactionDateInput = new JTextField();
+        transactionDateInput.setText(String.valueOf(LocalDate.now()));
+        transactionDateInput.setEditable(false);
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
         newTransactionPanel.add(transactionDatePanel);
@@ -144,8 +142,8 @@ public class TransactionsPanel extends JPanel{
         JLabel maturityDate = new JLabel("Maturity Date");
         maturityDateSettings = new DatePickerSettings();
         maturityDateInput = new DatePicker(maturityDateSettings);
-        maturityDateSettings.setDateRangeLimits(LocalDate.now(), LocalDate.now().plusYears(10));//what should the range be?
-        maturityDateInput.setDateToToday();
+        maturityDateSettings.setDateRangeLimits(LocalDate.now().plusDays(1), LocalDate.now().plusYears(10));//what should the range be?
+        maturityDateInput.setDate(LocalDate.now().plusDays(1));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
