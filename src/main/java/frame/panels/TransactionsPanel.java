@@ -19,8 +19,6 @@ public class TransactionsPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
     public JTextField transactionDateInput;
-    private final LocalDate first = LocalDate.of(2012, 1, 1);//confirm
-
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
     public TransactionsPanel(String[] currencyTypes){
@@ -142,7 +140,7 @@ public class TransactionsPanel extends JPanel{
         JLabel maturityDate = new JLabel("Maturity Date");
         maturityDateSettings = new DatePickerSettings();
         maturityDateInput = new DatePicker(maturityDateSettings);
-        maturityDateSettings.setDateRangeLimits(LocalDate.now().plusDays(1), LocalDate.now().plusYears(10));//what should the range be?
+        maturityDateSettings.setDateRangeLimits(LocalDate.now().plusDays(1), LocalDate.now().plusYears(100));
         maturityDateInput.setDate(LocalDate.now().plusDays(1));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
@@ -192,9 +190,6 @@ public class TransactionsPanel extends JPanel{
 
     private boolean fieldsAreValid()
     {
-        boolean validTransactionDate = transactionDateInput.getText() != null;
-        // todo: also confirm that the date is today
-
 
         // todo: decide if we're letting the vendor be empty
 
@@ -220,10 +215,9 @@ public class TransactionsPanel extends JPanel{
             validRate = false;
         }
 
-        boolean validMaturityDate = maturityDateInput.getDate() != null && maturityDateInput.getDate().isAfter(LocalDate.now());
+        boolean validMaturityDate = maturityDateInput.getDate() != null;
 
-        return validTransactionDate
-                && validQuant
+        return validQuant
                 && validRate
                 && validMaturityDate;
     }
