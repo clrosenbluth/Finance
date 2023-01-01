@@ -4,7 +4,6 @@ import frame.panels.PNLPanel;
 import frame.panels.SandboxPanel;
 import frame.panels.TransactionsPanel;
 
-import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 
