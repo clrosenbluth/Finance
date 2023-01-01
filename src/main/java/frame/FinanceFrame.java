@@ -16,7 +16,6 @@ public class FinanceFrame extends JFrame
     public JPanel sandbox;
     String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
 
-    @Inject
     public FinanceFrame()
     {
         setTitle("FX Position Tracker");
