@@ -38,6 +38,7 @@ public class TransactionsPanel extends JPanel{
     private void fillTransactionsTab()
     {
         JLabel reportLabel = new JLabel();
+        // todo: actually calculate this
         reportLabel.setText("Overall position: 10000 USD");
         add(reportLabel);
 
@@ -167,6 +168,7 @@ public class TransactionsPanel extends JPanel{
                     rateInput.getText(),
                     maturityDateInput.getText(),
                     "rate goes here"});
+            // todo: use rate calculator
 
             clearFields();
         }
