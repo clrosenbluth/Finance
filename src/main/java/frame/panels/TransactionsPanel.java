@@ -193,7 +193,8 @@ public class TransactionsPanel extends JPanel{
     private boolean fieldsAreValid()
     {
         boolean validTransactionDate = transactionDateInput.getText() != null;
-        // todo: also confirm that the date is today or earlier
+        // todo: also confirm that the date is today
+
 
         // todo: decide if we're letting the vendor be empty
 
@@ -219,8 +220,7 @@ public class TransactionsPanel extends JPanel{
             validRate = false;
         }
 
-        boolean validMaturityDate = maturityDateInput.getText() != null;
-        // todo: also confirm that the date is after today
+        boolean validMaturityDate = maturityDateInput.getDate() != null && maturityDateInput.getDate().isAfter(LocalDate.now());
 
         return validTransactionDate
                 && validQuant
@@ -230,7 +230,6 @@ public class TransactionsPanel extends JPanel{
 
     private void clearFields()
     {
-        transactionDateInput.setText("");
         vendorInput.setText("");
         quantityInput.setText("");
         rateInput.setText("");
