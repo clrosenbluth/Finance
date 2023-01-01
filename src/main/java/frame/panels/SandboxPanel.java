@@ -4,18 +4,26 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 
 public class SandboxPanel extends JPanel{
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
     private JTable transactionTable;
-    private JTextField transactionDateInput;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
     private JTextField quantityInput;
     private JTextField rateInput;
-    private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
+
+    public DatePicker transactionDateInput;
+    private DatePickerSettings transactionDateSettings;
+
+    public DatePicker maturityDateInput;
+    private DatePickerSettings maturityDateSettings;
 
     public SandboxPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
@@ -61,7 +69,10 @@ public class SandboxPanel extends JPanel{
         JPanel transactionDatePanel = new JPanel();
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
-        transactionDateInput = new JTextField();
+        transactionDateSettings = new DatePickerSettings();
+        transactionDateInput = new DatePicker(transactionDateSettings);
+        transactionDateSettings.setDateRangeLimits(LocalDate.now().minusDays(100), LocalDate.now().plusYears(1000));
+        transactionDateInput.setDateToToday();
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
         newTransactionPanel.add(transactionDatePanel);
@@ -131,7 +142,10 @@ public class SandboxPanel extends JPanel{
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
-        maturityDateInput = new JTextField();
+        maturityDateSettings = new DatePickerSettings();
+        maturityDateInput = new DatePicker(maturityDateSettings);
+        maturityDateSettings.setDateRangeLimits(LocalDate.now().minusDays(99), LocalDate.now().plusYears(100).plusDays(1));//date is after transaction date
+        maturityDateInput.setDate(LocalDate.now().plusDays(1));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
