@@ -1,22 +1,26 @@
 package frame.panels;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
 
 public class TransactionsPanel extends JPanel{
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
     private JTable transactionTable;
-    private JTextField transactionDateInput;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
     private JTextField quantityInput;
     private JTextField rateInput;
-    private JTextField maturityDateInput;
     private JComboBox<String> foreignCurrencyInput;
-
+    public JTextField transactionDateInput;
+    public DatePicker maturityDateInput;
+    private DatePickerSettings maturityDateSettings;
     public TransactionsPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
 
@@ -64,6 +68,8 @@ public class TransactionsPanel extends JPanel{
         transactionDatePanel.setLayout(new BoxLayout(transactionDatePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionDate = new JLabel("Transaction Date");
         transactionDateInput = new JTextField();
+        transactionDateInput.setText(String.valueOf(LocalDate.now()));
+        transactionDateInput.setEditable(false);
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
         newTransactionPanel.add(transactionDatePanel);
@@ -132,7 +138,10 @@ public class TransactionsPanel extends JPanel{
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
-        maturityDateInput = new JTextField();
+        maturityDateSettings = new DatePickerSettings();
+        maturityDateInput = new DatePicker(maturityDateSettings);
+        maturityDateSettings.setDateRangeLimits(LocalDate.now().plusDays(1), LocalDate.now().plusYears(100));
+        maturityDateInput.setDate(LocalDate.now().plusDays(1));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
@@ -181,8 +190,6 @@ public class TransactionsPanel extends JPanel{
 
     private boolean fieldsAreValid()
     {
-        boolean validTransactionDate = transactionDateInput.getText() != null;
-        // todo: also confirm that the date is today or earlier
 
         // todo: decide if we're letting the vendor be empty
 
@@ -208,18 +215,15 @@ public class TransactionsPanel extends JPanel{
             validRate = false;
         }
 
-        boolean validMaturityDate = maturityDateInput.getText() != null;
-        // todo: also confirm that the date is after today
+        boolean validMaturityDate = maturityDateInput.getDate() != null;
 
-        return validTransactionDate
-                && validQuant
+        return validQuant
                 && validRate
                 && validMaturityDate;
     }
 
     private void clearFields()
     {
-        transactionDateInput.setText("");
         vendorInput.setText("");
         quantityInput.setText("");
         rateInput.setText("");
