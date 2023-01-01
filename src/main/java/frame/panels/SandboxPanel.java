@@ -21,7 +21,6 @@ public class SandboxPanel extends JPanel{
 
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
-    private final LocalDate first = LocalDate.of(2012, 1, 1);//confirm
 
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
@@ -72,8 +71,7 @@ public class SandboxPanel extends JPanel{
         JLabel transactionDate = new JLabel("Transaction Date");
         transactionDateSettings = new DatePickerSettings();
         transactionDateInput = new DatePicker(transactionDateSettings);
-        //fix!!!!
-        transactionDateSettings.setDateRangeLimits(first, LocalDate.now().plusYears(1000));//date is before maturity date or today if null
+        transactionDateSettings.setDateRangeLimits(LocalDate.now().minusDays(100), LocalDate.now().plusYears(1000));
         transactionDateInput.setDateToToday();
         transactionDatePanel.add(transactionDate);
         transactionDatePanel.add(transactionDateInput);
@@ -146,8 +144,7 @@ public class SandboxPanel extends JPanel{
         JLabel maturityDate = new JLabel("Maturity Date");
         maturityDateSettings = new DatePickerSettings();
         maturityDateInput = new DatePicker(maturityDateSettings);
-        //fix!!!
-        maturityDateSettings.setDateRangeLimits(first, LocalDate.now().plusYears(1000));//date is after transaction date
+        maturityDateSettings.setDateRangeLimits(LocalDate.now().minusDays(99), LocalDate.now().plusYears(100).plusDays(1));//date is after transaction date
         maturityDateInput.setDate(LocalDate.now().plusDays(1));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
