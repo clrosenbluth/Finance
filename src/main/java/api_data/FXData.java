@@ -25,9 +25,14 @@ public class FXData {
 
     }
 
-    //format date as "YYYY-MM-DD"
+    /**
+     * @param date format as "YYYY-MM-DD"
+     * @return returns closing price in terms of foreign currency/USD
+     *          ex: returns 3.50920 when buying/selling ILS
+     */
+
     public Double getClose(String date) {
         LinkedTreeMap<String, String> dateMap = timeSeries.timeSeriesFX.get(date);
-        return Double.parseDouble(dateMap.get("1. open"));
+        return Double.parseDouble(dateMap.get("4. close"));
     }
 }
