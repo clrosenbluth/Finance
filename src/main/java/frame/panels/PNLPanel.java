@@ -7,6 +7,7 @@ import java.awt.*;
 public class PNLPanel extends JPanel{
     private final String[] currencyTypes;
 
+    //date range picker and overall PNL at top
     private double overallPNL = 0.0; //since initial investment or overall pnl within given time frame
     private double investment = 10000; //holds value of what is remaining from original investment
 
@@ -25,11 +26,11 @@ public class PNLPanel extends JPanel{
         String[] columnNames = {
                 "Date",
                 "Total FX Position",
-                "Remaining USD Value from Original Investment",
+                "Remaining Investment",
                 "PnL",
 
         };
-        int rows = 5;
+        int rows = 0;
         DefaultTableModel model = new DefaultTableModel(rows, columnNames.length);
         model.setColumnIdentifiers(columnNames);
 
