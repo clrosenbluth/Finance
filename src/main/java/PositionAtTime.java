@@ -3,21 +3,35 @@ import frame.StoredProcs;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PositionAtTime
 {
     StoredProcs sp;
+    String[] currencies;
+    double initialUSD;
 
-    public PositionAtTime(StoredProcs sp)
+    public PositionAtTime(StoredProcs sp, String[] currencies, double initialUSD)
     {
         this.sp = sp;
+        this.currencies = currencies;
+        this.initialUSD = initialUSD;
     }
 
-    public Double getPositionAtTime(LocalDate date) throws SQLException
+    // todo: return map of currency type and amount current held in that currency
+    public HashMap<String, Double> getPositionAtTime(LocalDate date) throws SQLException
     {
-        double sum = 0.0;
+        HashMap<String, Double> positions = new HashMap<>();
+        for (String curr : currencies)
+        {
+            Double amt = curr.equals("USD") ? initialUSD : 0.0;
+            positions.put(curr, amt);
+        }
+
         ArrayList<String[]> records = sp.getAllTransactions();
         // form: date, vendor, quantity, type, currency, rate, maturity
+        // quantity: amount in FX
+        // rate: FX per dollar
         for (String[] record : records)
         {
             String t_date = record[0];
@@ -28,9 +42,20 @@ public class PositionAtTime
 
             // otherwise:
             Double quantity = Double.parseDouble(record[2]);
+            String currency = record[4];
             Double rate = Double.parseDouble(record[5]);
-            sum += (quantity * rate);
+
+            // remove (or add) the number of dollars
+            double base = positions.get("USD");
+            double fxInDollars = quantity * rate;
+            double newBase = base - fxInDollars;
+            positions.put("USD", newBase);
+
+            // add (or remove) the number of FX units
+            Double fx = positions.get(currency);
+            Double newFX = fx + quantity;
+            positions.put(currency, newFX);
         }
-        return sum;
+        return positions;
     }
 }
