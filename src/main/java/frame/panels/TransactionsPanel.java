@@ -244,8 +244,15 @@ public class TransactionsPanel extends JPanel{
                 "Implied Risk-Free Rate"};
 
         int numRows = 0;
-        DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length);
+        DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length){
+            @Override
+            public  boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         model.setColumnIdentifiers(columnNames);
+
+
 
         transactionTable = new JTable(model);
         JScrollPane sp = new JScrollPane(transactionTable);
