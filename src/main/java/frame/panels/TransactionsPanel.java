@@ -19,12 +19,12 @@ public class TransactionsPanel extends JPanel{
     private JTextField quantityInput;
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
-
-    private Connection connection;
-
     public JTextField transactionDateInput;
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
+
+    private Connection connection;
+
     public TransactionsPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
         this.connection = connection;

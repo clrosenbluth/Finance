@@ -10,7 +10,7 @@ public class PNLPanel extends JPanel{
     private Connection connection;
     private final String[] currencyTypes;
 
-    public PNLPanel(Connection connection, String[] currencyTypes){
+    public PNLPanel(String[] currencyTypes, Connection connection){
         this.connection = connection;
         this.currencyTypes = currencyTypes;
 
