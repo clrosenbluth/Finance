@@ -1,5 +1,6 @@
 import frame.StoredProcs;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,20 +42,35 @@ public class PositionAtTime
             }
 
             // otherwise:
-            Double quantity = Double.parseDouble(record[2]);
-            String currency = record[4];
-            Double rate = Double.parseDouble(record[5]);
+            String type = record[3];
+            String maturityD = record[6];
+            LocalDate maturityLD = maturityD == null ?
+                    null :
+                    LocalDate.parse(maturityD);
 
-            // remove (or add) the number of dollars
-            double base = positions.get("USD");
-            double fxInDollars = quantity * rate;
-            double newBase = base - fxInDollars;
-            positions.put("USD", newBase);
+            boolean isSpot = type.equals("spot");
+            boolean isGoodFuture = type.equals("future")
+                    && maturityD != null
+                    && maturityLD.isAfter(date);
+            if (isSpot || isGoodFuture)
+            {
+                Double quantity = Double.parseDouble(record[2]);
+                String currency = record[4];
+                Double rate = Double.parseDouble(record[5]);
 
-            // add (or remove) the number of FX units
-            Double fx = positions.get(currency);
-            Double newFX = fx + quantity;
-            positions.put(currency, newFX);
+                // remove (or add) the number of dollars
+                double base = positions.get("USD");
+                double fxInDollars = quantity * rate;
+                double newBase = base - fxInDollars;
+                positions.put("USD", newBase);
+
+                // add (or remove) the number of FX units
+                Double fx = positions.get(currency);
+                Double newFX = fx + quantity;
+                positions.put(currency, newFX);
+            }
+            //todo: forwards: nothing is exchanged until the maturity date
+            // value accumulates because the promise can be sold
         }
         return positions;
     }
