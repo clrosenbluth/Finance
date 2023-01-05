@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
 import com.github.lgooddatepicker.components.DatePicker;
@@ -170,7 +171,8 @@ public class SandboxPanel extends JPanel{
                     foreignCurrencyInput.getSelectedItem(),
                     rateInput.getText(),
                     maturityDateInput.getText(),
-                    "rate goes here"});
+                    "rate goes here",
+            });
             // todo: use rate calculator
 
             clearFields();
@@ -222,8 +224,7 @@ public class SandboxPanel extends JPanel{
             validRate = false;
         }
 
-        boolean validMaturityDate = maturityDateInput.getText() != null;
-        // todo: also confirm that the date is after today
+        boolean validMaturityDate = maturityDateInput.getDate() != null && maturityDateInput.getDate().isAfter(transactionDateInput.getDate());
 
         return validTransactionDate
                 && validForwardQuant
@@ -249,16 +250,40 @@ public class SandboxPanel extends JPanel{
                 "Foreign Currency",
                 "Rate",
                 "Maturity Date",
-                "Implied Risk-Free Rate"};
+                "Implied Risk-Free Rate",
+        };
 
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length);
         model.setColumnIdentifiers(columnNames);
 
         transactionTable = new JTable(model);
+        transactionTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane sp = new JScrollPane(transactionTable);
         sp.setBounds(25, 50, 300, 300);
         add(sp);
+
+
+        JButton removeSelectedRow = new JButton("Remove Selected Row");
+        removeSelectedRow.addActionListener(this::onRemoveRowClicked);
+        add(removeSelectedRow);
+
+        JButton clearTable = new JButton("Clear Table");
+        clearTable.addActionListener(this::clearTableClicked);
+        add(clearTable);
+    }
+
+    private void clearTableClicked(ActionEvent actionEvent) {
+        DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
+        dtm.setRowCount(0);
+    }
+
+    private void onRemoveRowClicked(ActionEvent actionEvent) {
+        if(transactionTable.getSelectedRow() != -1) {
+            // remove selected row from the model
+            ((DefaultTableModel)transactionTable.getModel()).removeRow(transactionTable.getSelectedRow());
+        }
     }
 
 }
