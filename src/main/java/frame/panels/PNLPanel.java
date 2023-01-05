@@ -13,6 +13,7 @@ import java.time.LocalDate;
 
 public class PNLPanel extends JPanel{
 
+    //TODO: add "Download Report" button
     private final String[] currencyTypes;
     PNLPresenter pnlPresenter;
 
@@ -120,13 +121,11 @@ public class PNLPanel extends JPanel{
     }
 
     private void onRefreshButtonClicked(ActionEvent actionEvent) {
-        /*TODO: update values in pnl tab
-         */
-
+        //TODO: update values in pnl tab
     }
 
     private void onDateChosen(DateChangeEvent dateChangeEvent) {
-        //for both date pickers
+        //TODO: for both date pickers
     }
 
 
