@@ -9,9 +9,9 @@ public interface ExchangeFXRatesService {
 
     /**
      *
-     * @param to_symbol
+     * @param to_currency
      * @return Realtime FX rate
      */
-    @GET("query?function=CURRENCY_EXCHANGE_RATE&from_symbol=USD&apikey=" + api_key)
-    Call<RealTimeFXRate> getRealTimeFXRate(@Query("to_symbol") String to_symbol);
+    @GET("query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&apikey=" + api_key)
+    Call<RealTimeFXRate> getRealTimeFXRate(@Query("to_currency") String to_currency);
 }
