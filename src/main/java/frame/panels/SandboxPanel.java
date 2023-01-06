@@ -272,6 +272,9 @@ public class SandboxPanel extends JPanel{
         JButton clearTable = new JButton("Clear Table");
         clearTable.addActionListener(this::clearTableClicked);
         add(clearTable);
+
+        JButton loadTable = new JButton("Load Table From Database");
+        add(loadTable);
     }
 
     private void clearTableClicked(ActionEvent actionEvent) {
