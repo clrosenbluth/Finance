@@ -11,13 +11,13 @@ import java.util.HashMap;
 
 public class PositionAndPresentValueAtTime
 {
-    StoredProcs sp;
-    String[] currencies;
-    double initialUSD;
-    LocalDate date;
-    HashMap<String, Double> position;
-    Double presentValue;
-    ArrayList<String[]> records;
+    private StoredProcs sp;
+    private String[] currencies;
+    private double initialUSD;
+    private LocalDate date;
+    private HashMap<String, Double> position;
+    private Double presentValue;
+    private ArrayList<String[]> records;
 
     public PositionAndPresentValueAtTime(LocalDate date,
                                          StoredProcs sp,
@@ -29,7 +29,6 @@ public class PositionAndPresentValueAtTime
         this.currencies = currencies;
         this.initialUSD = initialUSD;
 
-        setDate(date);
         position = new HashMap<>();
         position.put("USD", this.initialUSD); // adding separately because not included in currency list
         for (String curr : this.currencies)
@@ -38,6 +37,8 @@ public class PositionAndPresentValueAtTime
         }
 
         records = new ArrayList<>();
+
+        setDate(date);
     }
 
     public void setDate(LocalDate date) throws SQLException

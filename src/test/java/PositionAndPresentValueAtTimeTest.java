@@ -1,3 +1,4 @@
+import api_data.FXData;
 import frame.StoredProcs;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,89 +13,129 @@ import static org.mockito.Mockito.when;
 
 class PositionAndPresentValueAtTimeTest
 {
+    StoredProcs sp;
+    FXData fxData;
+    PositionAndPresentValueAtTime calc;
+    HashMap<String, Double> expectedPosition;
+    HashMap<String, Double> actualPosition;
+    Double initialUSD = 1000.00;
+    Double expectedPresentValue;
+    Double actualPresentValue;
+
     // todo: update tests
-    StoredProcs sp = Mockito.mock(StoredProcs.class);
-    String[] currencies = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
-    PositionAndPresentValueAtTime posCalc = new PositionAndPresentValueAtTime(sp, currencies, 1000.00);
-    LocalDate date = LocalDate.now();
-
-    @Test
-    public void getPositionAtTime_basic() throws SQLException
+    PositionAndPresentValueAtTimeTest() throws SQLException
     {
-        // given
-        when(sp.getAllTransactions()).thenReturn(null);
-        HashMap<String, Double> expected = new HashMap<>();
-        expected.put("USD", 1000.00);
-        expected.put("ILS", 0.0);
-        expected.put("EUR", 0.0);
-        expected.put("JPY", 0.0);
-        expected.put("GBP", 0.0);
-        expected.put("AUD", 0.0);
-        expected.put("CAD", 0.0);
-        expected.put("CHF", 0.0);
-        expected.put("CNH", 0.0);
-        expected.put("HKD", 0.0);
+        sp = Mockito.mock(StoredProcs.class);
+        fxData = Mockito.mock(FXData.class);
+        String[] currencies = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
+        calc = new PositionAndPresentValueAtTime(
+                LocalDate.now(),
+                sp,
+                currencies,
+                initialUSD
+        );
 
-        // when
-        HashMap<String, Double> positions = posCalc.getPositionAtTime(date);
+        expectedPosition = new HashMap<>();
+        expectedPosition.put("USD", initialUSD);
+        expectedPosition.put("ILS", 0.0);
+        expectedPosition.put("EUR", 0.0);
+        expectedPosition.put("JPY", 0.0);
+        expectedPosition.put("GBP", 0.0);
+        expectedPosition.put("AUD", 0.0);
+        expectedPosition.put("CAD", 0.0);
+        expectedPosition.put("CHF", 0.0);
+        expectedPosition.put("CNH", 0.0);
+        expectedPosition.put("HKD", 0.0);
+        actualPosition = new HashMap<>();
 
-        // then
-        assertEquals(expected, positions);
+        ArrayList<String[]> transactions = new ArrayList<>();
+        transactions.add(new String[] {"2002-01-01","bank","300","Spot","ILS","3",""});
+        transactions.add(new String[] {"2002-01-03","bank","300","Future","ILS","3","2003-01-03"});
+        transactions.add(new String[] {"2002-01-05","bank","300","Future","ILS","3","2004-01-05"});
+        when(sp.getAllTransactions()).thenReturn(transactions);
     }
 
     @Test
-    public void getPositionAtTime_spots() throws SQLException
+    public void getInfoAfterTransaction1() throws SQLException
     {
         // given
-        // form: date, vendor, quantity, type, currency, rate, maturity
-        ArrayList<String[]> transactions = new ArrayList<>();
-        transactions.add(new String[] {"2022-01-01","","300","spot","ILS","3.6",""});
-        when(sp.getAllTransactions()).thenReturn(transactions);
-        HashMap<String, Double> expected = new HashMap<>();
-        expected.put("USD", 916.67);
-        expected.put("ILS", 300.0);
-        expected.put("EUR", 0.0);
-        expected.put("JPY", 0.0);
-        expected.put("GBP", 0.0);
-        expected.put("AUD", 0.0);
-        expected.put("CAD", 0.0);
-        expected.put("CHF", 0.0);
-        expected.put("CNH", 0.0);
-        expected.put("HKD", 0.0);
+        when(fxData.getClose("2002-01-02")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2002, 1, 2));
+        expectedPosition.put("USD", initialUSD - 100.00);
+        expectedPosition.put("ILS", 300.00);
+        expectedPresentValue = 1000.00;
 
         // when
-        HashMap<String, Double> positions = posCalc.getPositionAtTime(date);
+        actualPosition = calc.getPosition();
+        actualPresentValue = calc.getPresentValue();
 
         // then
-        assertEquals(expected, positions);
+        assertEquals(expectedPosition, actualPosition);
+        assertEquals(expectedPresentValue, actualPresentValue);
     }
 
     @Test
-    public void getPositionAtTime_futures() throws SQLException
+    public void getInfoAfterTransaction2Made() throws SQLException
     {
         // given
-        // form: date, vendor, quantity, type, currency, rate, maturity
-        ArrayList<String[]> transactions = new ArrayList<>();
-        transactions.add(new String[] {"2022-01-01","","300","future","ILS","3.6","2022-01-02"});
-        transactions.add(new String[] {"2022-01-01","","300","future","ILS","3.6","2026-01-01"});
-        when(sp.getAllTransactions()).thenReturn(transactions);
-        HashMap<String, Double> expected = new HashMap<>();
-        expected.put("USD", 916.67);
-        expected.put("ILS", 300.0);
-        expected.put("EUR", 0.0);
-        expected.put("JPY", 0.0);
-        expected.put("GBP", 0.0);
-        expected.put("AUD", 0.0);
-        expected.put("CAD", 0.0);
-        expected.put("CHF", 0.0);
-        expected.put("CNH", 0.0);
-        expected.put("HKD", 0.0);
+        when(fxData.getClose("2002-01-05")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2002, 1, 5));
 
         // when
-        HashMap<String, Double> positions = posCalc.getPositionAtTime(date);
+        actualPosition = calc.getPosition();
+        actualPresentValue = calc.getPresentValue();
 
         // then
-        assertEquals(expected, positions);
+        assertEquals(expectedPosition, actualPosition);
+        assertEquals(expectedPresentValue, actualPresentValue);
+    }
+
+    @Test
+    public void getInfoAfterTransaction2Matured() throws SQLException
+    {
+        // given
+        when(fxData.getClose("2002-01-04")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2003, 1, 4));
+
+        // when
+        actualPosition = calc.getPosition();
+        actualPresentValue = calc.getPresentValue();
+
+        // then
+        assertEquals(expectedPosition, actualPosition);
+        assertEquals(expectedPresentValue, actualPresentValue);
+    }
+
+    @Test
+    public void getInfoAfterTransaction3Made() throws SQLException
+    {
+        // given
+        when(fxData.getClose("2002-01-06")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2002, 1, 6));
+
+        // when
+        actualPosition = calc.getPosition();
+        actualPresentValue = calc.getPresentValue();
+
+        // then
+        assertEquals(expectedPosition, actualPosition);
+        assertEquals(expectedPresentValue, actualPresentValue);
+    }
+
+    @Test
+    public void getInfoAfterTransaction3Matured() throws SQLException
+    {
+        // given
+        when(fxData.getClose("2004-01-06")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2004, 1, 6));
+
+        // when
+        actualPosition = calc.getPosition();
+        actualPresentValue = calc.getPresentValue();
+
+        // then
+        assertEquals(expectedPosition, actualPosition);
+        assertEquals(expectedPresentValue, actualPresentValue);
     }
 
 }
