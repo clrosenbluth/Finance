@@ -1,9 +1,11 @@
 package api_data;
 
-import api_connection.FXRatesService;
-import api_connection.FXRatesServiceFactory;
-import api_connection.RealTimeFXRate;
-import api_connection.TimeSeries;
+import api_connection.daily_service.DailyFXService;
+import api_connection.daily_service.DailyFXServiceFactory;
+import api_connection.daily_service.TimeSeries;
+import api_connection.exchange_rates_service.RealTimeFXRate;
+import api_connection.exchange_rates_service.ExchangeFXRatesService;
+import api_connection.exchange_rates_service.ExchangeFXRatesFactory;
 import com.google.gson.internal.LinkedTreeMap;
 import retrofit2.Response;
 
@@ -19,31 +21,15 @@ public class FXData {
     public FXData(String ticker) {
         this.ticker = ticker;
 
-        FXRatesServiceFactory factory = new FXRatesServiceFactory();
-        FXRatesService fxRatesService = factory.getInstance();
+        DailyFXServiceFactory dailyFXServiceFactory = new DailyFXServiceFactory();
+        DailyFXService dailyFXService = dailyFXServiceFactory.getInstance();
 
-        getTimeSeries(fxRatesService);
-        getRealTimeFXRate(fxRatesService);
+        ExchangeFXRatesFactory exchangeFXRatesFactory = new ExchangeFXRatesFactory();
+        ExchangeFXRatesService exchangeFXRatesService = exchangeFXRatesFactory.getInstance();
+
+        getTimeSeries(dailyFXService);
+        getRealTimeFXRate(exchangeFXRatesService);
     }
-
-    private void getTimeSeries(FXRatesService service) {
-        try {
-            Response<TimeSeries> response = service.getFXData(ticker).execute();
-            timeSeries = response.body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getRealTimeFXRate(FXRatesService service) {
-        try{
-            Response<RealTimeFXRate> response = service.getRealTimeFXRate(ticker).execute();
-            realTimeFXRate = response.body();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
 
     /**
      * @param date format as "YYYY-MM-DD"
@@ -61,6 +47,24 @@ public class FXData {
     public double getRealTimeFXRate() {
         String rate = realTimeFXRate.realTimeExchangeRate.get("5. Exchange Rate");
         return Double.parseDouble(rate);
+    }
+
+    private void getTimeSeries(DailyFXService service) {
+        try {
+            Response<TimeSeries> response = service.getDailyFXData(ticker).execute();
+            timeSeries = response.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getRealTimeFXRate(ExchangeFXRatesService service) {
+        try{
+            Response<RealTimeFXRate> response = service.getRealTimeFXRate(ticker).execute();
+            realTimeFXRate = response.body();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 }

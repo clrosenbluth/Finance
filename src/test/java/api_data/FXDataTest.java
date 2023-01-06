@@ -26,7 +26,7 @@ class FXDataTest {
         double rate = fxData.getRealTimeFXRate();
 
         //then
-        assertEquals(133.62100000, rate);
+        assertTrue(rate > 130 && rate < 140);
 
     }
 }
