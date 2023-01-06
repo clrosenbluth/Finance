@@ -7,10 +7,12 @@ import retrofit2.http.Query;
 public interface FXRateService {
      String api_key = "556BNVOJG7TA17H2";
 
-    /* gets 100 days worth of data
-     * add parameter outputsize=full for 2115 days
+    /**
+     *
+     * @param to_symbol
+     * @return full available days worth of data with close, open, etc per day for fx specified
      */
-    @GET("query?function=FX_DAILY&from_symbol=USD&apikey=" + api_key)
+    @GET("query?function=FX_DAILY&from_symbol=USD&outputsize=full&apikey=" + api_key)
     Call<TimeSeries> getDailyFXData(@Query("to_symbol") String to_symbol);
 
     /**

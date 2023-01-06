@@ -26,7 +26,7 @@ class FXRateServiceTest {
 
         //then
         assertNotNull(timeSeries);
-        assertEquals(100, timeSeries.timeSeriesFX.size());
+        assertTrue(timeSeries.timeSeriesFX.size() > 2000);
     }
 
     @Test
