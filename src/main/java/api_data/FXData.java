@@ -1,11 +1,9 @@
 package api_data;
 
-import api_connection.daily_service.DailyFXService;
-import api_connection.daily_service.DailyFXServiceFactory;
-import api_connection.daily_service.TimeSeries;
-import api_connection.exchange_rates_service.RealTimeFXRate;
-import api_connection.exchange_rates_service.ExchangeFXRatesService;
-import api_connection.exchange_rates_service.ExchangeFXRatesFactory;
+import api_connection.FXRateService;
+import api_connection.FXRateServiceFactory;
+import api_connection.TimeSeries;
+import api_connection.RealTimeFXRate;
 import com.google.gson.internal.LinkedTreeMap;
 import retrofit2.Response;
 
@@ -21,14 +19,17 @@ public class FXData {
     public FXData(String ticker) {
         this.ticker = ticker;
 
-        DailyFXServiceFactory dailyFXServiceFactory = new DailyFXServiceFactory();
-        DailyFXService dailyFXService = dailyFXServiceFactory.getInstance();
+        FXRateServiceFactory fxRateServiceFactory = new FXRateServiceFactory();
+        FXRateService fxRateService = fxRateServiceFactory.getInstance();
 
-        ExchangeFXRatesFactory exchangeFXRatesFactory = new ExchangeFXRatesFactory();
-        ExchangeFXRatesService exchangeFXRatesService = exchangeFXRatesFactory.getInstance();
-
-        getTimeSeries(dailyFXService);
-        getRealTimeFXRate(exchangeFXRatesService);
+        try {
+            Response<TimeSeries> timeSeriesResponse = fxRateService.getDailyFXData(ticker).execute();
+            timeSeries = timeSeriesResponse.body();
+            Response<RealTimeFXRate> realTimeFXRateResponse = fxRateService.getRealTimeFXRate(ticker).execute();
+            realTimeFXRate = realTimeFXRateResponse.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -42,29 +43,12 @@ public class FXData {
     }
 
     /**
-     * returns realtime currency exchange rate
+     *
+     * @return realtime currency exchange rate
      */
     public double getRealTimeFXRate() {
         String rate = realTimeFXRate.realTimeExchangeRate.get("5. Exchange Rate");
         return Double.parseDouble(rate);
-    }
-
-    private void getTimeSeries(DailyFXService service) {
-        try {
-            Response<TimeSeries> response = service.getDailyFXData(ticker).execute();
-            timeSeries = response.body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getRealTimeFXRate(ExchangeFXRatesService service) {
-        try{
-            Response<RealTimeFXRate> response = service.getRealTimeFXRate(ticker).execute();
-            realTimeFXRate = response.body();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
 }

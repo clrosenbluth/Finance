@@ -1,4 +1,4 @@
-package api_connection.daily_service;
+package api_connection;
 
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
