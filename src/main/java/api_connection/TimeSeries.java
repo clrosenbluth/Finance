@@ -9,7 +9,7 @@ public class TimeSeries {
     public
     LinkedTreeMap<String, LinkedTreeMap> timeSeriesFX;
 
-    public TimeSeries(LinkedTreeMap<String, LinkedTreeMap> timeSeriesFX){
+    public TimeSeries(LinkedTreeMap<String, LinkedTreeMap> timeSeriesFX) {
         this.timeSeriesFX = timeSeriesFX;
     }
 
