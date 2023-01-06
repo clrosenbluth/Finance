@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
 import com.github.lgooddatepicker.components.DatePicker;
@@ -13,6 +12,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 public class SandboxPanel extends JPanel{
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
+    private JPanel tableButtonsPanel;
     private JTable transactionTable;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
@@ -47,6 +47,8 @@ public class SandboxPanel extends JPanel{
         addNewTransactionPanel();
 
         addTransactionsTable();
+
+        addTableButtons();
     }
 
     private void addNewTransactionPanel()
@@ -183,6 +185,23 @@ public class SandboxPanel extends JPanel{
         }
     }
 
+    private void addTableButtons() {
+        tableButtonsPanel = new JPanel(new FlowLayout());
+
+        JButton removeSelectedRow = new JButton("Remove Selected Row");
+        removeSelectedRow.addActionListener(this::onRemoveRowClicked);
+        tableButtonsPanel.add(removeSelectedRow);
+
+        JButton clearTable = new JButton("Clear Table");
+        clearTable.addActionListener(this::clearTableClicked);
+        tableButtonsPanel.add(clearTable);
+
+        JButton loadTable = new JButton("Load Table From Database");
+        tableButtonsPanel.add(loadTable);
+
+        add(tableButtonsPanel);
+
+    }
     private void sendErrorMessage()
     {
         JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
@@ -264,17 +283,6 @@ public class SandboxPanel extends JPanel{
         sp.setBounds(25, 50, 300, 300);
         add(sp);
 
-
-        JButton removeSelectedRow = new JButton("Remove Selected Row");
-        removeSelectedRow.addActionListener(this::onRemoveRowClicked);
-        add(removeSelectedRow);
-
-        JButton clearTable = new JButton("Clear Table");
-        clearTable.addActionListener(this::clearTableClicked);
-        add(clearTable);
-
-        JButton loadTable = new JButton("Load Table From Database");
-        add(loadTable);
     }
 
     private void clearTableClicked(ActionEvent actionEvent) {
