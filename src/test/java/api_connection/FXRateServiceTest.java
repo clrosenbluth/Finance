@@ -1,4 +1,4 @@
-package api_connection.exchange_rates_service;
+package api_connection;
 
 import org.junit.jupiter.api.Test;
 import retrofit2.Response;
@@ -7,9 +7,27 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ExchangeFXRatesServiceTest {
-    ExchangeFXRatesFactory factory = new ExchangeFXRatesFactory();
-    ExchangeFXRatesService service = factory.getInstance();
+class FXRateServiceTest {
+    FXRateServiceFactory factory = new FXRateServiceFactory();
+    FXRateService service = factory.getInstance();
+
+    @Test
+    void getDailyFXData() {
+        //given
+
+        //when
+        TimeSeries timeSeries = null;
+        try{
+            Response<TimeSeries> response = service.getDailyFXData("EUR").execute();
+            timeSeries = response.body();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        //then
+        assertNotNull(timeSeries);
+        assertEquals(100, timeSeries.timeSeriesFX.size());
+    }
 
     @Test
     void getRealTimeFXRate() {

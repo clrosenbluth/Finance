@@ -1,17 +1,17 @@
-package api_connection.daily_service;
+package api_connection;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DailyFXServiceFactory {
+public class FXRateServiceFactory {
 
-    public DailyFXService getInstance() {
+    public FXRateService getInstance() {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.alphavantage.co/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        return retrofit.create(DailyFXService.class);
+        return retrofit.create(FXRateService.class);
     }
 }
