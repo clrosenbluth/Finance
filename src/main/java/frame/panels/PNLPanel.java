@@ -1,5 +1,6 @@
 package frame.panels;
 
+import calculations.PNLTableValues;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
@@ -16,6 +17,7 @@ public class PNLPanel extends JPanel{
     //TODO: add "Download Report" button
     private final String[] currencyTypes;
     PNLPresenter pnlPresenter;
+    PNLTableValues tableValues;
 
     //update as transactions are added - get values from presenter?
     private LocalDate firstTransactionDate;
@@ -35,7 +37,8 @@ public class PNLPanel extends JPanel{
 
     public PNLPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
-        pnlPresenter = new PNLPresenter();
+        this.tableValues = new PNLTableValues();
+        this.pnlPresenter = new PNLPresenter(tableValues);
 
         createPNLTab();
         fillPNLTab();
