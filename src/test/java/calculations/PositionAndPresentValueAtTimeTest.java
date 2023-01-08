@@ -1,4 +1,7 @@
+package calculations;
+
 import api_data.FXData;
+import calculations.PositionAndPresentValueAtTime;
 import frame.StoredProcs;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

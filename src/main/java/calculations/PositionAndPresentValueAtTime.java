@@ -1,3 +1,5 @@
+package calculations;
+
 import api_data.FXData;
 import frame.StoredProcs;
 
@@ -17,7 +19,7 @@ public class PositionAndPresentValueAtTime
     private LocalDate date;
     private HashMap<String, Double> position;
     private Double presentValue;
-    private ArrayList<String[]> records;
+    public ArrayList<String[]> records;
 
     public PositionAndPresentValueAtTime(LocalDate date,
                                          StoredProcs sp,
