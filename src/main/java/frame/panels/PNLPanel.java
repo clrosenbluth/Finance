@@ -15,8 +15,8 @@ import java.time.LocalDate;
 public class PNLPanel extends JPanel{
 
     private Connection connection;
-    //TODO: add "Download Report" button
     private final String[] currencyTypes;
+    //TODO: add "Download Report" button
     PNLPresenter pnlPresenter;
 
     //update as transactions are added - get values from presenter?
