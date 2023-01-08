@@ -9,13 +9,15 @@ import presenter.PNLPresenter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 
 public class PNLPanel extends JPanel{
 
-    //TODO: add "Download Report" button
+    private Connection connection;
     private final String[] currencyTypes;
+    //TODO: add "Download Report" button
     PNLPresenter pnlPresenter;
     PNLTableValues tableValues;
 
@@ -35,7 +37,8 @@ public class PNLPanel extends JPanel{
     private DatePickerSettings datePickerSettings;
     private DatePicker datePicker;
 
-    public PNLPanel(String[] currencyTypes){
+    public PNLPanel(String[] currencyTypes, Connection connection){
+        this.connection = connection;
         this.currencyTypes = currencyTypes;
         this.tableValues = new PNLTableValues();
         this.pnlPresenter = new PNLPresenter(tableValues);
