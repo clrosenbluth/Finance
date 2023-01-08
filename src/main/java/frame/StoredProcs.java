@@ -34,6 +34,7 @@ public class StoredProcs
             } catch (Exception ignored)
             {}
             results.add(new String[] {
+                    String.valueOf(rs.getDate("date")),
                     vendor,
                     String.valueOf(rs.getFloat("quantity")),
                     rs.getString("t_type"),
