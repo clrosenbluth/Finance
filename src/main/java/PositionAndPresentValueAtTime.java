@@ -124,8 +124,7 @@ public class PositionAndPresentValueAtTime
         {
             double pos = position.get(curr);
             FXData fxData = new FXData(curr);
-            // todo: we need a method to get current rate too, not just close
-            double rate = fxData.getClose(date.toString());
+            double rate = fxData.getRealTimeFXRate();
             value += pos / rate;
         }
 
@@ -161,8 +160,7 @@ public class PositionAndPresentValueAtTime
                     double valueAccruedInFX = elapsedPercentage * quantity;
 
                     FXData fxData = new FXData(currency);
-                    // todo: we need a method to get current rate too, not just close
-                    double rate = fxData.getClose(date.toString());
+                    double rate = fxData.getRealTimeFXRate();
 
                     value += valueAccruedInFX / rate;
                 }

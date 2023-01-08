@@ -22,7 +22,7 @@ class PositionAndPresentValueAtTimeTest
     Double expectedPresentValue;
     Double actualPresentValue;
 
-    // todo: update tests
+    // todo: fix tests
     PositionAndPresentValueAtTimeTest() throws SQLException
     {
         sp = Mockito.mock(StoredProcs.class);
@@ -49,9 +49,9 @@ class PositionAndPresentValueAtTimeTest
         actualPosition = new HashMap<>();
 
         ArrayList<String[]> transactions = new ArrayList<>();
-        transactions.add(new String[] {"2002-01-01","bank","300","Spot","ILS","3",""});
-        transactions.add(new String[] {"2002-01-03","bank","300","Future","ILS","3","2003-01-03"});
-        transactions.add(new String[] {"2002-01-05","bank","300","Future","ILS","3","2004-01-05"});
+        transactions.add(new String[] {"2016-01-01","bank","300","Spot","ILS","3",""});
+        transactions.add(new String[] {"2016-01-03","bank","300","Future","ILS","3","2017-01-03"});
+        transactions.add(new String[] {"2016-01-05","bank","300","Future","ILS","3","2018-01-05"});
         when(sp.getAllTransactions()).thenReturn(transactions);
     }
 
@@ -59,8 +59,8 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction1() throws SQLException
     {
         // given
-        when(fxData.getClose("2002-01-02")).thenReturn(3.00);
-        calc.setDate(LocalDate.of(2002, 1, 2));
+        when(fxData.getClose("2016-01-02")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2016, 1, 2));
         expectedPosition.put("USD", initialUSD - 100.00);
         expectedPosition.put("ILS", 300.00);
         expectedPresentValue = 1000.00;
@@ -78,8 +78,8 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction2Made() throws SQLException
     {
         // given
-        when(fxData.getClose("2002-01-05")).thenReturn(3.00);
-        calc.setDate(LocalDate.of(2002, 1, 5));
+        when(fxData.getClose("2016-01-05")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2016, 1, 5));
 
         // when
         actualPosition = calc.getPosition();
@@ -94,8 +94,8 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction2Matured() throws SQLException
     {
         // given
-        when(fxData.getClose("2002-01-04")).thenReturn(3.00);
-        calc.setDate(LocalDate.of(2003, 1, 4));
+        when(fxData.getClose("2016-01-04")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2017, 1, 4));
 
         // when
         actualPosition = calc.getPosition();
@@ -110,8 +110,8 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction3Made() throws SQLException
     {
         // given
-        when(fxData.getClose("2002-01-06")).thenReturn(3.00);
-        calc.setDate(LocalDate.of(2002, 1, 6));
+        when(fxData.getClose("2016-01-06")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2016, 1, 6));
 
         // when
         actualPosition = calc.getPosition();
@@ -126,8 +126,8 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction3Matured() throws SQLException
     {
         // given
-        when(fxData.getClose("2004-01-06")).thenReturn(3.00);
-        calc.setDate(LocalDate.of(2004, 1, 6));
+        when(fxData.getClose("2018-01-06")).thenReturn(3.00);
+        calc.setDate(LocalDate.of(2018, 1, 6));
 
         // when
         actualPosition = calc.getPosition();
