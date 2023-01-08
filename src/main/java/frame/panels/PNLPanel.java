@@ -1,6 +1,7 @@
 package frame.panels;
 
 import calculations.PNLTableValues;
+import calculations.PositionAndPresentValueAtTime;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
@@ -40,7 +41,7 @@ public class PNLPanel extends JPanel{
     public PNLPanel(String[] currencyTypes, Connection connection){
         this.connection = connection;
         this.currencyTypes = currencyTypes;
-        this.tableValues = new PNLTableValues();
+        //this.tableValues = new PNLTableValues(new PositionAndPresentValueAtTime(currencyTypes));
         this.pnlPresenter = new PNLPresenter(tableValues);
 
         createPNLTab();
