@@ -21,22 +21,17 @@ public class PNLPanel extends JPanel{
     private LocalDate firstTransactionDate;
     private LocalDate lastTransactionDate;
 
-    private LocalDate firstDateFromGivenRange;
-    private LocalDate lastDateFromGivenRange;
-    private double overallPNL = 0.0; //since initial investment or overall pnl within given time frame
+    private LocalDate dateFromGivenRange;
+    private double overallPNL = 0.0; //PnL from first transaction to chosen date
 
     private JLabel overallPNLLabel;
     private JPanel topPanel;
-    private JPanel startDateRangePanel;
-    private JPanel lastDateRangePanel;
-    private JLabel startDateRangeLabel;
-    private JLabel lastDateRangeLabel;
+    private JPanel chooseDatePanel;
+    private JLabel chooseDateLabel;
     private JTable pnlTable;
     private JButton refreshButton;
     private DatePickerSettings datePickerSettings;
-    private DatePickerSettings datePickerSettings2;
-    private DatePicker startDatePicker;
-    private DatePicker lastDatePicker;
+    private DatePicker datePicker;
 
     public PNLPanel(String[] currencyTypes){
         this.currencyTypes = currencyTypes;
@@ -69,33 +64,21 @@ public class PNLPanel extends JPanel{
         topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout());
 
-        startDateRangePanel = new JPanel();
-        startDateRangePanel.setLayout(new BoxLayout(startDateRangePanel, BoxLayout.PAGE_AXIS));
-        startDateRangeLabel = new JLabel("Start Date");
-        startDateRangePanel.add(startDateRangeLabel);
+        chooseDatePanel = new JPanel();
+        chooseDatePanel.setLayout(new BoxLayout(chooseDatePanel, BoxLayout.PAGE_AXIS));
+        chooseDateLabel = new JLabel("Last Date To View");
+        chooseDatePanel.add(chooseDateLabel);
         datePickerSettings = new DatePickerSettings();
-        startDatePicker = new DatePicker(datePickerSettings);
+        datePicker = new DatePicker(datePickerSettings);
         datePickerSettings.setDateRangeLimits(firstTransactionDate, lastTransactionDate);
-        startDatePicker.setDate(firstTransactionDate);
-        startDatePicker.addDateChangeListener(this::onDateChosen);
-        startDateRangePanel.add(startDatePicker);
-
-        lastDateRangePanel = new JPanel();
-        lastDateRangePanel.setLayout(new BoxLayout(lastDateRangePanel, BoxLayout.PAGE_AXIS));
-        lastDateRangeLabel = new JLabel("Last Date");
-        lastDateRangePanel.add(lastDateRangeLabel);
-        datePickerSettings2 = new DatePickerSettings();
-        lastDatePicker = new DatePicker(datePickerSettings2);
-        datePickerSettings2.setDateRangeLimits(lastDatePicker.getDate(), lastTransactionDate);
-        lastDatePicker.setDate(lastTransactionDate);
-        lastDatePicker.addDateChangeListener(this::onDateChosen);
-        lastDateRangePanel.add(lastDatePicker);
+        datePicker.setDate(lastTransactionDate);
+        datePicker.addDateChangeListener(this::onDateChosen);
+        chooseDatePanel.add(datePicker);
 
         overallPNLLabel = new JLabel();
         overallPNLLabel.setText("Overall PNL = " + overallPNL + " USD");
 
-        topPanel.add(startDateRangePanel);
-        topPanel.add(lastDateRangePanel);
+        topPanel.add(chooseDatePanel);
         topPanel.add(Box.createHorizontalStrut(30));
         topPanel.add(overallPNLLabel);
 
