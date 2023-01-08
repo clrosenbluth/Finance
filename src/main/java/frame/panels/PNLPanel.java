@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 
-public class PNLPanel extends JPanel{
+public class PNLPanel extends JPanel {
 
     private Connection connection;
     private final String[] currencyTypes;
@@ -38,11 +38,12 @@ public class PNLPanel extends JPanel{
     private DatePickerSettings datePickerSettings;
     private DatePicker datePicker;
 
-    public PNLPanel(String[] currencyTypes, Connection connection){
+    public PNLPanel(String[] currencyTypes, Connection connection) {
         this.connection = connection;
         this.currencyTypes = currencyTypes;
-        //this.tableValues = new PNLTableValues(new PositionAndPresentValueAtTime(currencyTypes));
-        this.pnlPresenter = new PNLPresenter(tableValues);
+        //this.tableValues = new PNLTableValues(new PositionAndPresentValueAtTime(currencyTypes));//TODO: add correctly
+        this.pnlPresenter = new PNLPresenter(tableValues, lastTransactionDate.toString(),
+                firstTransactionDate.toString()); //TODO: format correctly
 
         createPNLTab();
         fillPNLTab();
@@ -58,7 +59,7 @@ public class PNLPanel extends JPanel{
         createPNLTable();
     }
 
-    private void addRefreshButton(){
+    private void addRefreshButton() {
         refreshButton = new JButton();
         refreshButton.setText("Refresh");
 

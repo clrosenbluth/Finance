@@ -12,6 +12,10 @@ public class PNLTableValues {
     private HashMap<String, double[]> PNLTable;
     private ArrayList<String[]> records;
 
+    public HashMap<String, double[]> getPNLTable() {
+        return PNLTable;
+    }
+
     public PNLTableValues(PositionAndPresentValueAtTime positionAndPresentValueAtTime) {
         this.PNLTable = new HashMap<>();
         this.positionAndPresentValueAtTime = positionAndPresentValueAtTime;
