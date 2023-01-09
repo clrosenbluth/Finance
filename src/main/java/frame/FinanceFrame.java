@@ -26,24 +26,24 @@ public class FinanceFrame extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1,1));
 
-        addTabbedPane();
-
-        createTransactionsTab();
-        createPnlTab();
-        createSandboxTab();
-
         try
         {
             //  todo: insert password, but do not push
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/finance",
                     "root",
-                    "");
+                    "Spirit409&");
             storedProcedures = new StoredProcs(connection);
         } catch (Exception e)
         {
             e.printStackTrace();
         }
 
+
+        addTabbedPane();
+
+        createTransactionsTab();
+        createPnlTab();
+        createSandboxTab();
     }
 
     private void addTabbedPane()

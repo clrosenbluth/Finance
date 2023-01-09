@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TransactionPresenter
 {
@@ -58,15 +59,13 @@ public class TransactionPresenter
                     maturityDate,
                     impliedRate);
 
-            panel.clearFields();
-
             Date insertMaturity = maturityDate.equals("N/A") ?
                     null :
                     Date.valueOf(maturityDate);
 
             try {
                 storedProcedures.insertTransaction(
-                        insertMaturity,
+                        Date.valueOf(panel.getTransactionDate()),
                         panel.getVendor(),
                         Float.parseFloat(panel.getQuant()),
                         panel.getType(),
@@ -75,7 +74,11 @@ public class TransactionPresenter
                         insertMaturity);
             } catch (Exception e) {
                 panel.sendErrorMessage("Unable to add transaction to database");
+                e.printStackTrace();
             }
+
+            panel.clearFields();
+
         }
         else {
             panel.sendErrorMessage("Please ensure all fields are valid.");
@@ -121,6 +124,18 @@ public class TransactionPresenter
             {
                 for (String[] transaction : transactions)
                 {
+                    Integer totalDays = Math.toIntExact(transaction[3].equals(Constants.SPOT.label) ?
+                            0 :
+                            LocalDate.parse(transaction[0]).until(
+                                    LocalDate.parse(transaction[6]),
+                                    ChronoUnit.DAYS
+                            )
+                    );
+
+                    String impliedRate = transaction[3].equals(Constants.SPOT.label) ?
+                            "N/A" :
+                            calculator.getContinuousRate(Float.parseFloat(transaction[5]), totalDays).toString();
+
                     panel.addRowToModel(
                             transaction[0],
                             transaction[1],
@@ -129,7 +144,7 @@ public class TransactionPresenter
                             transaction[4],
                             transaction[5],
                             transaction[6],
-                            transaction[7]
+                            impliedRate
                     );
                 }
             }
@@ -137,6 +152,7 @@ public class TransactionPresenter
         } catch (Exception e)
         {
             panel.sendErrorMessage("Unable to load transactions from database.");
+            e.printStackTrace();
         }
 
     }

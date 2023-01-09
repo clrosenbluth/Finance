@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
 import java.time.LocalDate;
 
 public class TransactionsPanel extends JPanel{
@@ -28,11 +27,8 @@ public class TransactionsPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    private StoredProcs storedProcedures;
-
     public TransactionsPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        this.storedProcedures = storedProcedures;
 
         presenter = new TransactionPresenter(this, storedProcedures);
 
@@ -253,6 +249,7 @@ public class TransactionsPanel extends JPanel{
 
     public String getQuant()
     {
+        System.out.println(quantityInput.getText());
         return quantityInput.getText();
     }
 
