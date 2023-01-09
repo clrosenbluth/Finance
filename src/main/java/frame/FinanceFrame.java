@@ -31,7 +31,7 @@ public class FinanceFrame extends JFrame
             //  todo: insert password, but do not push
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/finance",
                     "root",
-                    "Spirit409&");
+                    "");
             storedProcedures = new StoredProcs(connection);
         } catch (Exception e)
         {
