@@ -218,12 +218,12 @@ public class TransactionsPanel extends JPanel{
         };
         model.setColumnIdentifiers(columnNames);
 
-
-
         transactionTable = new JTable(model);
-        JScrollPane sp = new JScrollPane(transactionTable);
-        sp.setBounds(25, 50, 300, 300);
-        add(sp);
+        JScrollPane jsp = new JScrollPane(transactionTable);
+        jsp.setBounds(25, 50, 300, 300);
+        add(jsp);
+
+
     }
 
     public void sendErrorMessage()
