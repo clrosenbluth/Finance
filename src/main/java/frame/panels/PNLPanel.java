@@ -8,13 +8,15 @@ import presenter.PNLPresenter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 
 public class PNLPanel extends JPanel{
 
-    //TODO: add "Download Report" button
+    private Connection connection;
     private final String[] currencyTypes;
+    //TODO: add "Download Report" button
     PNLPresenter pnlPresenter;
 
     //update as transactions are added - get values from presenter?
@@ -38,7 +40,8 @@ public class PNLPanel extends JPanel{
     private DatePicker startDatePicker;
     private DatePicker lastDatePicker;
 
-    public PNLPanel(String[] currencyTypes){
+    public PNLPanel(String[] currencyTypes, Connection connection){
+        this.connection = connection;
         this.currencyTypes = currencyTypes;
         pnlPresenter = new PNLPresenter();
 

@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import java.time.LocalDate;
 
 import com.github.lgooddatepicker.components.DatePicker;
@@ -19,14 +20,17 @@ public class SandboxPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
 
+    private Connection connection;
+
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
 
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public SandboxPanel(String[] currencyTypes){
+    public SandboxPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
+        this.connection = connection;
 
         createSandboxTab();
         fillSandboxTab();
