@@ -3,6 +3,7 @@ package frame.panels;
 import Tools.Constants;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import frame.StoredProcs;
 import presenter.TransactionPresenter;
 
 import javax.swing.*;
@@ -27,13 +28,13 @@ public class TransactionsPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    private Connection connection;
+    private StoredProcs storedProcedures;
 
-    public TransactionsPanel(String[] currencyTypes, Connection connection){
+    public TransactionsPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        this.connection = connection;
+        this.storedProcedures = storedProcedures;
 
-        presenter = new TransactionPresenter(this);
+        presenter = new TransactionPresenter(this, storedProcedures);
 
         createTransactionsTab();
         fillTransactionsTab();
@@ -203,7 +204,6 @@ public class TransactionsPanel extends JPanel{
 
     private void addTransactionsTable()
     {
-        // todo: add transactions from database
         String[] columnNames = {"Transaction Date",
                 "Vendor",
                 "Type",
@@ -212,8 +212,6 @@ public class TransactionsPanel extends JPanel{
                 "Rate",
                 "Maturity Date",
                 "Implied Risk-Free Rate"};
-
-        // todo: fill from database
 
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length){
@@ -229,12 +227,12 @@ public class TransactionsPanel extends JPanel{
         jsp.setBounds(25, 50, 300, 300);
         add(jsp);
 
-
+        presenter.fillTransactionTableFromDatabase();
     }
 
-    public void sendErrorMessage()
+    public void sendErrorMessage(String errorMessage)
     {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+        JOptionPane.showMessageDialog(this, errorMessage,
                 "Error message", JOptionPane.ERROR_MESSAGE);
     }
 

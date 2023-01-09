@@ -3,6 +3,7 @@ package frame.panels;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import frame.StoredProcs;
 import presenter.PNLPresenter;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 
 public class PNLPanel extends JPanel{
 
-    private Connection connection;
+    private StoredProcs storedProcedures;
     private final String[] currencyTypes;
     //TODO: add "Download Report" button
     PNLPresenter pnlPresenter;
@@ -40,8 +41,8 @@ public class PNLPanel extends JPanel{
     private DatePicker startDatePicker;
     private DatePicker lastDatePicker;
 
-    public PNLPanel(String[] currencyTypes, Connection connection){
-        this.connection = connection;
+    public PNLPanel(String[] currencyTypes, StoredProcs storedProcedures){
+        this.storedProcedures = storedProcedures;
         this.currencyTypes = currencyTypes;
         pnlPresenter = new PNLPresenter();
 

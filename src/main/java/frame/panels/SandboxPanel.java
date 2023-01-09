@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import frame.StoredProcs;
 
 public class SandboxPanel extends JPanel{
     private final String[] currencyTypes;
@@ -20,7 +21,7 @@ public class SandboxPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
 
-    private Connection connection;
+    private StoredProcs storedProcedures;
 
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
@@ -28,9 +29,9 @@ public class SandboxPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public SandboxPanel(String[] currencyTypes, Connection connection){
+    public SandboxPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        this.connection = connection;
+        this.storedProcedures = storedProcedures;
 
         createSandboxTab();
         fillSandboxTab();

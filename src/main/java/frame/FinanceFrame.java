@@ -17,6 +17,7 @@ public class FinanceFrame extends JFrame
     public JPanel sandbox;
     String[] currencyTypes = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
     Connection connection;
+    StoredProcs storedProcedures;
 
     public FinanceFrame()
     {
@@ -37,6 +38,7 @@ public class FinanceFrame extends JFrame
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/finance",
                     "root",
                     "");
+            storedProcedures = new StoredProcs(connection);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -52,18 +54,18 @@ public class FinanceFrame extends JFrame
 
     private void createTransactionsTab()
     {
-        transactions = new TransactionsPanel(currencyTypes, connection);
+        transactions = new TransactionsPanel(currencyTypes, storedProcedures);
         tabbedPane.addTab("Transactions", transactions);
     }
     private void createPnlTab()
     {
-        pnl = new PNLPanel(currencyTypes, connection);
+        pnl = new PNLPanel(currencyTypes, storedProcedures);
         tabbedPane.addTab("PnL", pnl);
     }
 
     private void createSandboxTab()
     {
-        sandbox = new SandboxPanel(currencyTypes, connection);
+        sandbox = new SandboxPanel(currencyTypes, storedProcedures);
         tabbedPane.addTab("Sandbox", sandbox);
     }
 

@@ -2,19 +2,24 @@ package presenter;
 
 import Tools.Constants;
 import Tools.RateCalculator;
+import frame.StoredProcs;
 import frame.panels.TransactionsPanel;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 public class TransactionPresenter
 {
     TransactionsPanel panel;
     RateCalculator calculator;
+    StoredProcs storedProcedures;
 
-    public TransactionPresenter(TransactionsPanel panel) {
+    public TransactionPresenter(TransactionsPanel panel, StoredProcs storedProcedures) {
         this.panel = panel;
         calculator = new RateCalculator();
+        this.storedProcedures = storedProcedures;
     }
 
     public double getNPV()
@@ -54,11 +59,26 @@ public class TransactionPresenter
                     impliedRate);
 
             panel.clearFields();
-            // todo: add to database
+
+            Date insertMaturity = maturityDate.equals("N/A") ?
+                    null :
+                    Date.valueOf(maturityDate);
+
+            try {
+                storedProcedures.insertTransaction(
+                        insertMaturity,
+                        panel.getVendor(),
+                        Float.parseFloat(panel.getQuant()),
+                        panel.getType(),
+                        panel.getFX(),
+                        Float.parseFloat(panel.getRate()),
+                        insertMaturity);
+            } catch (Exception e) {
+                panel.sendErrorMessage("Unable to add transaction to database");
+            }
         }
-        else
-        {
-            panel.sendErrorMessage();
+        else {
+            panel.sendErrorMessage("Please ensure all fields are valid.");
         }
     }
 
@@ -89,5 +109,35 @@ public class TransactionPresenter
     {
         // todo: get this from quant and api and positions
         return true;
+    }
+
+    public void fillTransactionTableFromDatabase()
+    {
+        ArrayList<String[]> transactions;
+        try
+        {
+            transactions = storedProcedures.getAllTransactions();
+            if (transactions != null)
+            {
+                for (String[] transaction : transactions)
+                {
+                    panel.addRowToModel(
+                            transaction[0],
+                            transaction[1],
+                            transaction[2],
+                            transaction[3],
+                            transaction[4],
+                            transaction[5],
+                            transaction[6],
+                            transaction[7]
+                    );
+                }
+            }
+
+        } catch (Exception e)
+        {
+            panel.sendErrorMessage("Unable to load transactions from database.");
+        }
+
     }
 }
