@@ -202,6 +202,7 @@ public class SandboxPanel extends JPanel{
         tableButtonsPanel.add(clearTable);
 
         JButton loadTable = new JButton("Load Table From Database");
+        loadTable.addActionListener(this::loadTableClicked);
         tableButtonsPanel.add(loadTable);
 
         add(tableButtonsPanel);
@@ -293,6 +294,10 @@ public class SandboxPanel extends JPanel{
     private void clearTableClicked(ActionEvent actionEvent) {
         DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
         dtm.setRowCount(0);
+    }
+
+    private void loadTableClicked(ActionEvent actionEvent) {
+        // todo
     }
 
     private void onRemoveRowClicked(ActionEvent actionEvent) {
