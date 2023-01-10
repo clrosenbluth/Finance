@@ -1,7 +1,9 @@
 package frame.panels;
 
+import Tools.Constants;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import presenter.TransactionPresenter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,6 +13,8 @@ import java.sql.Connection;
 import java.time.LocalDate;
 
 public class TransactionsPanel extends JPanel{
+    private TransactionPresenter presenter;
+
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
     private JTable transactionTable;
@@ -27,6 +31,7 @@ public class TransactionsPanel extends JPanel{
 
     public TransactionsPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
+        presenter = new TransactionPresenter(this);
         this.connection = connection;
 
         createTransactionsTab();
@@ -44,7 +49,9 @@ public class TransactionsPanel extends JPanel{
     {
         JLabel reportLabel = new JLabel();
         // todo: actually calculate this
-        reportLabel.setText("Overall position: 10000 USD");
+        reportLabel.setText("Overall present value: " +
+                presenter.getNPV() +
+                " USD");
         add(reportLabel);
 
         addNewTransactionPanel();
@@ -97,9 +104,10 @@ public class TransactionsPanel extends JPanel{
         JPanel transactionTypePanel = new JPanel();
         transactionTypePanel.setLayout(new BoxLayout(transactionTypePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionType = new JLabel("Transaction Type");
-        String[] transactionTypes = {"Spot", "Future"};
+        String[] transactionTypes = {Constants.SPOT.label, Constants.FUTURE.label};
         transactionTypeInput = new JComboBox<>(transactionTypes);
         transactionTypeInput.setSelectedIndex((0));
+        transactionTypeInput.addActionListener(this::onTypeChange);
         transactionTypePanel.add(transactionType);
         transactionTypePanel.add(transactionTypeInput);
         newTransactionPanel.add(transactionTypePanel);
@@ -140,7 +148,6 @@ public class TransactionsPanel extends JPanel{
 
     private void addMaturity()
     {
-        // TODO: disable if spot is selected
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
@@ -148,6 +155,7 @@ public class TransactionsPanel extends JPanel{
         maturityDateInput = new DatePicker(maturityDateSettings);
         maturityDateSettings.setDateRangeLimits(LocalDate.now().plusDays(1), LocalDate.now().plusYears(100));
         maturityDateInput.setDate(LocalDate.now().plusDays(1));
+        maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
@@ -162,86 +170,38 @@ public class TransactionsPanel extends JPanel{
 
     public void onAddClicked(ActionEvent event)
     {
-        if (fieldsAreValid() && hasEnoughMoney())
-        {
-            DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
-            model.addRow(new Object[]{transactionDateInput.getText(),
-                    vendorInput.getText(),
-                    transactionTypeInput.getSelectedItem(),
-                    quantityInput.getText(),
-                    foreignCurrencyInput.getSelectedItem(),
-                    rateInput.getText(),
-                    maturityDateInput.getText(),
-                    "rate goes here"});
-            // todo: use rate calculator
-
-            // todo: add to database
-
-            clearFields();
-        }
-        else
-        {
-            sendErrorMessage();
-        }
+        presenter.tryToAdd();
     }
 
-    private void sendErrorMessage()
+    public void onTypeChange(ActionEvent event)
     {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
-                "Error message", JOptionPane.ERROR_MESSAGE);
+        maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
     }
 
-    private boolean hasEnoughMoney()
+    public void addRowToModel(String transactionDate,
+                              String vendor,
+                              String transactionType,
+                              String quantity,
+                              String foreignCurrency,
+                              String rate,
+                              String maturity,
+                              String impliedRate)
     {
-        // TODO: implement
-        return true;
-    }
-
-    private boolean fieldsAreValid()
-    {
-
-        // todo: decide if we're letting the vendor be empty
-
-        boolean validQuant;
-        try
-        {
-            double quant = Double.parseDouble(quantityInput.getText());
-            validQuant = quant > 0;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validQuant = false;
-        }
-
-        boolean validRate;
-        try
-        {
-            double rate = Double.parseDouble(rateInput.getText());
-            validRate = true;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validRate = false;
-        }
-
-        boolean validMaturityDate = maturityDateInput.getDate() != null;
-
-        return validQuant
-                && validRate
-                && validMaturityDate;
-    }
-
-    private void clearFields()
-    {
-        vendorInput.setText("");
-        quantityInput.setText("");
-        rateInput.setText("");
-        maturityDateInput.setText("");
+        DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
+        model.addRow(new Object[]{
+                transactionDate,
+                vendor,
+                transactionType,
+                quantity,
+                foreignCurrency,
+                rate,
+                maturity,
+                impliedRate
+        });
     }
 
     private void addTransactionsTable()
     {
-        // todo: add transactions from database
         String[] columnNames = {"Transaction Date",
                 "Vendor",
                 "Type",
@@ -250,6 +210,7 @@ public class TransactionsPanel extends JPanel{
                 "Rate",
                 "Maturity Date",
                 "Implied Risk-Free Rate"};
+
 
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length){
@@ -260,12 +221,58 @@ public class TransactionsPanel extends JPanel{
         };
         model.setColumnIdentifiers(columnNames);
 
-
-
         transactionTable = new JTable(model);
         JScrollPane sp = new JScrollPane(transactionTable);
         sp.setBounds(25, 50, 300, 300);
         add(sp);
     }
 
+    public void sendErrorMessage()
+    {
+        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+                "Error message", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public String getTransactionDate()
+    {
+        return transactionDateInput.getText();
+    }
+
+    public String getVendor()
+    {
+        return vendorInput.getText();
+    }
+
+    public String getType()
+    {
+        return (String) transactionTypeInput.getSelectedItem();
+    }
+
+    public String getQuant()
+    {
+        return quantityInput.getText();
+    }
+
+    public String getFX()
+    {
+        return (String) foreignCurrencyInput.getSelectedItem();
+    }
+
+    public String getRate()
+    {
+        return rateInput.getText();
+    }
+
+    public String getMaturityDate()
+    {
+        return maturityDateInput.getDate().toString();
+    }
+
+    public void clearFields()
+    {
+        vendorInput.setText("");
+        quantityInput.setText("");
+        rateInput.setText("");
+        maturityDateInput.setText("");
+    }
 }
