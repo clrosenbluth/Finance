@@ -110,7 +110,7 @@ public class TransactionPresenter
 
     private boolean hasEnoughMoney()
     {
-        // todo: get this from quant and api and positions
+        // todo: get this from quant and positions
         return true;
     }
 

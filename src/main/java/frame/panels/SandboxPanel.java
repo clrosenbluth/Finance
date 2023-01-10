@@ -36,7 +36,7 @@ public class SandboxPanel extends JPanel{
     public SandboxPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
         this.storedProcedures = storedProcedures;
-        this.presenter = new SandboxPresenter(this);
+        this.presenter = new SandboxPresenter(this, storedProcedures);
 
         createSandboxTab();
         fillSandboxTab();
@@ -243,9 +243,9 @@ public class SandboxPanel extends JPanel{
         maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
     }
 
-    public void sendErrorMessage()
+    public void sendErrorMessage(String message)
     {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+        JOptionPane.showMessageDialog(this, message,
                 "Error message", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -303,12 +303,17 @@ public class SandboxPanel extends JPanel{
     }
 
     private void clearTableClicked(ActionEvent actionEvent) {
+        clearTable();
+    }
+
+    public void clearTable()
+    {
         DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
         dtm.setRowCount(0);
     }
 
     private void loadTableClicked(ActionEvent actionEvent) {
-        // todo
+        presenter.fillTransactionTableFromDatabase();
     }
 
     private void onRemoveRowClicked(ActionEvent actionEvent) {
