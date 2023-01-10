@@ -2,17 +2,18 @@ package presenter;
 
 import Tools.Constants;
 import Tools.RateCalculator;
-import frame.panels.TransactionsPanel;
+import frame.panels.SandboxPanel;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class TransactionPresenter
+public class SandboxPresenter
 {
-    private TransactionsPanel panel;
+    private SandboxPanel panel;
     private RateCalculator calculator;
 
-    public TransactionPresenter(TransactionsPanel panel) {
+    public SandboxPresenter(SandboxPanel panel)
+    {
         this.panel = panel;
         calculator = new RateCalculator();
     }
@@ -54,40 +55,51 @@ public class TransactionPresenter
                     impliedRate);
 
             panel.clearFields();
-            // todo: add to database
-        }
-        else
-        {
+        } else {
             panel.sendErrorMessage();
         }
     }
 
     private boolean fieldsAreValid()
     {
-        boolean validQuant = true;
-        try {
-            double quant = Double.parseDouble(panel.getQuant());
-        } catch (Exception e) {
-            validQuant = false;
+        boolean validTransactionDate = panel.getTransactionDate() != null;
+
+        boolean validForwardQuant = true;
+        try
+        {
+            double forwardQuant = Double.parseDouble(panel.getQuant());
+        } catch (Exception e)
+        {
+            validForwardQuant = false;
         }
 
         boolean validRate = true;
-        try {
+        try
+        {
             double rate = Double.parseDouble(panel.getRate());
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             validRate = false;
         }
 
         boolean validMaturityDate = panel.getMaturityDate() != null;
+        if (validTransactionDate && validMaturityDate)
+        {
+            validMaturityDate = LocalDate.parse(panel.getTransactionDate())
+                    .isBefore(LocalDate.parse(panel.getMaturityDate()));
+        }
 
-        return validQuant
+        return validTransactionDate
+                && validForwardQuant
                 && validRate
                 && validMaturityDate;
     }
 
     private boolean hasEnoughMoney()
     {
-        // todo: get this from quant and api and positions
+        // TODO: implement
         return true;
     }
+
+
 }
