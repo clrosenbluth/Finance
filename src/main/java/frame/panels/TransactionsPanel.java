@@ -3,13 +3,13 @@ package frame.panels;
 import Tools.Constants;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import frame.StoredProcs;
 import presenter.TransactionPresenter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
 import java.time.LocalDate;
 
 public class TransactionsPanel extends JPanel{
@@ -27,12 +27,9 @@ public class TransactionsPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    private Connection connection;
-
-    public TransactionsPanel(String[] currencyTypes, Connection connection){
+    public TransactionsPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        presenter = new TransactionPresenter(this);
-        this.connection = connection;
+        presenter = new TransactionPresenter(this, storedProcedures);
 
         createTransactionsTab();
         fillTransactionsTab();
@@ -211,7 +208,6 @@ public class TransactionsPanel extends JPanel{
                 "Maturity Date",
                 "Implied Risk-Free Rate"};
 
-
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length){
             @Override
@@ -222,14 +218,16 @@ public class TransactionsPanel extends JPanel{
         model.setColumnIdentifiers(columnNames);
 
         transactionTable = new JTable(model);
-        JScrollPane sp = new JScrollPane(transactionTable);
-        sp.setBounds(25, 50, 300, 300);
-        add(sp);
+        JScrollPane jsp = new JScrollPane(transactionTable);
+        jsp.setBounds(25, 50, 300, 300);
+        add(jsp);
+
+        presenter.fillTransactionTableFromDatabase();
     }
 
-    public void sendErrorMessage()
+    public void sendErrorMessage(String errorMessage)
     {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+        JOptionPane.showMessageDialog(this, errorMessage,
                 "Error message", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -250,6 +248,7 @@ public class TransactionsPanel extends JPanel{
 
     public String getQuant()
     {
+        System.out.println(quantityInput.getText());
         return quantityInput.getText();
     }
 

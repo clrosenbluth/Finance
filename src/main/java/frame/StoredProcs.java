@@ -18,7 +18,7 @@ public class StoredProcs
         CallableStatement stmt = conn.prepareCall(query);
         ResultSet rs = stmt.executeQuery();
 
-        ArrayList<String[]> results = new ArrayList<String[]>();
+        ArrayList<String[]> results = new ArrayList<>();
         while (rs.next())
         {
             String vendor = null;
@@ -47,7 +47,8 @@ public class StoredProcs
         return results;
     }
 
-    public void insertTransaction(String vendor,
+    public void insertTransaction(Date date,
+                                  String vendor,
                                   Float quantity,
                                   String type,
                                   String currency,
@@ -56,12 +57,13 @@ public class StoredProcs
     {
         String query = "{CALL insert_transaction(?,?,?,?,?,?,?)}";
         CallableStatement stmt = conn.prepareCall(query);
-        stmt.setString(1, vendor);
-        stmt.setFloat(2, quantity);
-        stmt.setString(3, type);
-        stmt.setString(4, currency);
-        stmt.setFloat(5, rate);
-        stmt.setDate(6, maturity);
+        stmt.setDate(1, date);
+        stmt.setString(2, vendor);
+        stmt.setFloat(3, quantity);
+        stmt.setString(4, type);
+        stmt.setString(5, currency);
+        stmt.setFloat(6, rate);
+        stmt.setDate(7, maturity);
 
         stmt.execute();
     }
