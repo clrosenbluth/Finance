@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import java.time.LocalDate;
 
 public class TransactionsPanel extends JPanel{
@@ -26,9 +27,12 @@ public class TransactionsPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public TransactionsPanel(String[] currencyTypes){
+    private Connection connection;
+
+    public TransactionsPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
         presenter = new TransactionPresenter(this);
+        this.connection = connection;
 
         createTransactionsTab();
         fillTransactionsTab();
@@ -207,7 +211,6 @@ public class TransactionsPanel extends JPanel{
                 "Maturity Date",
                 "Implied Risk-Free Rate"};
 
-        // todo: fill from database
 
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length){
@@ -217,8 +220,6 @@ public class TransactionsPanel extends JPanel{
             }
         };
         model.setColumnIdentifiers(columnNames);
-
-
 
         transactionTable = new JTable(model);
         JScrollPane sp = new JScrollPane(transactionTable);

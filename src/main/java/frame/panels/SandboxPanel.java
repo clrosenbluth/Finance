@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
 import java.time.LocalDate;
 
 import Tools.Constants;
@@ -16,6 +17,7 @@ public class SandboxPanel extends JPanel{
 
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
+    private JPanel tableButtonsPanel;
     private JTable transactionTable;
     private JTextField vendorInput;
     private JComboBox<String> transactionTypeInput;
@@ -23,15 +25,18 @@ public class SandboxPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
 
+    private Connection connection;
+
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
 
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public SandboxPanel(String[] currencyTypes){
+    public SandboxPanel(String[] currencyTypes, Connection connection){
         this.currencyTypes = currencyTypes;
         this.presenter = new SandboxPresenter(this);
+        this.connection = connection;
 
         createSandboxTab();
         fillSandboxTab();
@@ -55,6 +60,8 @@ public class SandboxPanel extends JPanel{
         addNewTransactionPanel();
 
         addTransactionsTable();
+
+        addTableButtons();
     }
 
     private void addNewTransactionPanel()
@@ -242,6 +249,24 @@ public class SandboxPanel extends JPanel{
                 "Error message", JOptionPane.ERROR_MESSAGE);
     }
 
+    private void addTableButtons() {
+        tableButtonsPanel = new JPanel(new FlowLayout());
+
+        JButton removeSelectedRow = new JButton("Remove Selected Row");
+        removeSelectedRow.addActionListener(this::onRemoveRowClicked);
+        tableButtonsPanel.add(removeSelectedRow);
+
+        JButton clearTable = new JButton("Clear Table");
+        clearTable.addActionListener(this::clearTableClicked);
+        tableButtonsPanel.add(clearTable);
+
+        JButton loadTable = new JButton("Load Table From Database");
+        tableButtonsPanel.add(loadTable);
+
+        add(tableButtonsPanel);
+
+    }
+
     public void clearFields()
     {
         transactionDateInput.setText("");
@@ -260,16 +285,32 @@ public class SandboxPanel extends JPanel{
                 "Foreign Currency",
                 "Rate",
                 "Maturity Date",
-                "Implied Risk-Free Rate"};
+                "Implied Risk-Free Rate",
+        };
 
         int numRows = 0;
         DefaultTableModel model = new DefaultTableModel(numRows, columnNames.length);
         model.setColumnIdentifiers(columnNames);
 
         transactionTable = new JTable(model);
+        transactionTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane sp = new JScrollPane(transactionTable);
         sp.setBounds(25, 50, 300, 300);
         add(sp);
+
+    }
+
+    private void clearTableClicked(ActionEvent actionEvent) {
+        DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
+        dtm.setRowCount(0);
+    }
+
+    private void onRemoveRowClicked(ActionEvent actionEvent) {
+        if(transactionTable.getSelectedRow() != -1) {
+            // remove selected row from the model
+            ((DefaultTableModel)transactionTable.getModel()).removeRow(transactionTable.getSelectedRow());
+        }
     }
 
 }
