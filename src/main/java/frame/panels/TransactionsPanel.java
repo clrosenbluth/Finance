@@ -29,7 +29,6 @@ public class TransactionsPanel extends JPanel{
 
     public TransactionsPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-
         presenter = new TransactionPresenter(this, storedProcedures);
 
         createTransactionsTab();
