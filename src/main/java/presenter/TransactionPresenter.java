@@ -2,19 +2,25 @@ package presenter;
 
 import Tools.Constants;
 import Tools.RateCalculator;
+import frame.StoredProcs;
 import frame.panels.TransactionsPanel;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TransactionPresenter
 {
-    private TransactionsPanel panel;
-    private RateCalculator calculator;
+    TransactionsPanel panel;
+    RateCalculator calculator;
+    StoredProcs storedProcedures;
 
-    public TransactionPresenter(TransactionsPanel panel) {
+    public TransactionPresenter(TransactionsPanel panel, StoredProcs storedProcedures) {
         this.panel = panel;
         calculator = new RateCalculator();
+        this.storedProcedures = storedProcedures;
     }
 
     public double getNPV()
@@ -53,12 +59,29 @@ public class TransactionPresenter
                     maturityDate,
                     impliedRate);
 
+            Date insertMaturity = maturityDate.equals("N/A") ?
+                    null :
+                    Date.valueOf(maturityDate);
+
+            try {
+                storedProcedures.insertTransaction(
+                        Date.valueOf(panel.getTransactionDate()),
+                        panel.getVendor(),
+                        Float.parseFloat(panel.getQuant()),
+                        panel.getType(),
+                        panel.getFX(),
+                        Float.parseFloat(panel.getRate()),
+                        insertMaturity);
+            } catch (Exception e) {
+                panel.sendErrorMessage("Unable to add transaction to database");
+                e.printStackTrace();
+            }
+
             panel.clearFields();
-            // todo: add to database
+
         }
-        else
-        {
-            panel.sendErrorMessage();
+        else {
+            panel.sendErrorMessage("Please ensure all fields are valid.");
         }
     }
 
@@ -87,7 +110,50 @@ public class TransactionPresenter
 
     private boolean hasEnoughMoney()
     {
-        // todo: get this from quant and api and positions
+        // todo: get this from quant and positions
         return true;
+    }
+
+    public void fillTransactionTableFromDatabase()
+    {
+        ArrayList<String[]> transactions;
+        try
+        {
+            transactions = storedProcedures.getAllTransactions();
+            if (transactions != null)
+            {
+                for (String[] transaction : transactions)
+                {
+                    Integer totalDays = Math.toIntExact(transaction[3].equals(Constants.SPOT.label) ?
+                            0 :
+                            LocalDate.parse(transaction[0]).until(
+                                    LocalDate.parse(transaction[6]),
+                                    ChronoUnit.DAYS
+                            )
+                    );
+
+                    String impliedRate = transaction[3].equals(Constants.SPOT.label) ?
+                            "N/A" :
+                            calculator.getContinuousRate(Float.parseFloat(transaction[5]), totalDays).toString();
+
+                    panel.addRowToModel(
+                            transaction[0],
+                            transaction[1],
+                            transaction[2],
+                            transaction[3],
+                            transaction[4],
+                            transaction[5],
+                            transaction[6],
+                            impliedRate
+                    );
+                }
+            }
+
+        } catch (Exception e)
+        {
+            panel.sendErrorMessage("Unable to load transactions from database.");
+            e.printStackTrace();
+        }
+
     }
 }

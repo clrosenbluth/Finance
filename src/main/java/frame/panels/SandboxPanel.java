@@ -4,12 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
 import java.time.LocalDate;
 
 import Tools.Constants;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import frame.StoredProcs;
 import presenter.SandboxPresenter;
 
 public class SandboxPanel extends JPanel{
@@ -25,7 +25,7 @@ public class SandboxPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
 
-    private Connection connection;
+    private StoredProcs storedProcedures;
 
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
@@ -33,10 +33,10 @@ public class SandboxPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public SandboxPanel(String[] currencyTypes, Connection connection){
+    public SandboxPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        this.presenter = new SandboxPresenter(this);
-        this.connection = connection;
+        this.storedProcedures = storedProcedures;
+        this.presenter = new SandboxPresenter(this, storedProcedures);
 
         createSandboxTab();
         fillSandboxTab();
@@ -243,9 +243,9 @@ public class SandboxPanel extends JPanel{
         maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
     }
 
-    public void sendErrorMessage()
+    public void sendErrorMessage(String message)
     {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
+        JOptionPane.showMessageDialog(this, message,
                 "Error message", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -261,6 +261,7 @@ public class SandboxPanel extends JPanel{
         tableButtonsPanel.add(clearTable);
 
         JButton loadTable = new JButton("Load Table From Database");
+        loadTable.addActionListener(this::loadTableClicked);
         tableButtonsPanel.add(loadTable);
 
         add(tableButtonsPanel);
@@ -302,8 +303,17 @@ public class SandboxPanel extends JPanel{
     }
 
     private void clearTableClicked(ActionEvent actionEvent) {
+        clearTable();
+    }
+
+    public void clearTable()
+    {
         DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
         dtm.setRowCount(0);
+    }
+
+    private void loadTableClicked(ActionEvent actionEvent) {
+        presenter.fillTransactionTableFromDatabase();
     }
 
     private void onRemoveRowClicked(ActionEvent actionEvent) {
