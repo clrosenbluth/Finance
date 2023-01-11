@@ -4,13 +4,17 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
 import java.time.LocalDate;
 
+import Tools.Constants;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import frame.StoredProcs;
+import presenter.SandboxPresenter;
 
 public class SandboxPanel extends JPanel{
+    private SandboxPresenter presenter;
+
     private final String[] currencyTypes;
     private JPanel newTransactionPanel;
     private JPanel tableButtonsPanel;
@@ -21,7 +25,7 @@ public class SandboxPanel extends JPanel{
     private JTextField rateInput;
     private JComboBox<String> foreignCurrencyInput;
 
-    private Connection connection;
+    private StoredProcs storedProcedures;
 
     public DatePicker transactionDateInput;
     private DatePickerSettings transactionDateSettings;
@@ -29,9 +33,10 @@ public class SandboxPanel extends JPanel{
     public DatePicker maturityDateInput;
     private DatePickerSettings maturityDateSettings;
 
-    public SandboxPanel(String[] currencyTypes, Connection connection){
+    public SandboxPanel(String[] currencyTypes, StoredProcs storedProcedures){
         this.currencyTypes = currencyTypes;
-        this.connection = connection;
+        this.storedProcedures = storedProcedures;
+        this.presenter = new SandboxPresenter(this, storedProcedures);
 
         createSandboxTab();
         fillSandboxTab();
@@ -45,7 +50,11 @@ public class SandboxPanel extends JPanel{
     private void fillSandboxTab()
     {
         JLabel reportLabel = new JLabel();
-        reportLabel.setText("Overall position: 10000 USD");
+        reportLabel.setText(
+                "Overall position: " +
+                presenter.getNPV() +
+                " USD"
+        );
         add(reportLabel);
 
         addNewTransactionPanel();
@@ -85,6 +94,11 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(transactionDatePanel);
     }
 
+    public String getTransactionDate()
+    {
+        return transactionDateInput.getDate().toString();
+    }
+
     private void addVendor()
     {
         JPanel vendorPanel = new JPanel();
@@ -96,17 +110,28 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(vendorPanel);
     }
 
+    public String getVendor()
+    {
+        return vendorInput.getText();
+    }
+
     private void addType()
     {
         JPanel transactionTypePanel = new JPanel();
         transactionTypePanel.setLayout(new BoxLayout(transactionTypePanel, BoxLayout.PAGE_AXIS));
         JLabel transactionType = new JLabel("Transaction Type");
-        String[] transactionTypes = {"Spot", "Future"};
+        String[] transactionTypes = {Constants.SPOT.label, Constants.FUTURE.label};
         transactionTypeInput = new JComboBox<>(transactionTypes);
         transactionTypeInput.setSelectedIndex((0));
+        transactionTypeInput.addActionListener(this::onTypeChange);
         transactionTypePanel.add(transactionType);
         transactionTypePanel.add(transactionTypeInput);
         newTransactionPanel.add(transactionTypePanel);
+    }
+
+    public String getType()
+    {
+        return transactionTypeInput.getSelectedItem().toString();
     }
 
     private void addQuant()
@@ -120,6 +145,10 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(quantityPanel);
     }
 
+    public String getQuant()
+    {
+        return quantityInput.getText();
+    }
 
     private void addForeignCurrency()
     {
@@ -130,6 +159,11 @@ public class SandboxPanel extends JPanel{
         foreignCurrencyPanel.add(foreignCurrency);
         foreignCurrencyPanel.add(foreignCurrencyInput);
         newTransactionPanel.add(foreignCurrencyPanel);
+    }
+
+    public String getFX()
+    {
+        return foreignCurrencyInput.getSelectedItem().toString();
     }
 
     private void addRate()
@@ -143,9 +177,13 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(ratePanel);
     }
 
+    public String getRate()
+    {
+        return rateInput.getText();
+    }
+
     private void addMaturity()
     {
-        // TODO: disable if spot is selected
         JPanel maturityDatePanel = new JPanel();
         maturityDatePanel.setLayout(new BoxLayout(maturityDatePanel, BoxLayout.PAGE_AXIS));
         JLabel maturityDate = new JLabel("Maturity Date");
@@ -153,9 +191,15 @@ public class SandboxPanel extends JPanel{
         maturityDateInput = new DatePicker(maturityDateSettings);
         maturityDateSettings.setDateRangeLimits(LocalDate.now().minusDays(99), LocalDate.now().plusYears(100).plusDays(1));//date is after transaction date
         maturityDateInput.setDate(LocalDate.now().plusDays(1));
+        maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
         maturityDatePanel.add(maturityDate);
         maturityDatePanel.add(maturityDateInput);
         newTransactionPanel.add(maturityDatePanel);
+    }
+
+    public String getMaturityDate()
+    {
+        return maturityDateInput.getDate().toString();
     }
 
     private void addAddButton()
@@ -165,28 +209,44 @@ public class SandboxPanel extends JPanel{
         newTransactionPanel.add(add);
     }
 
+    public void addRowToModel(
+            String transactionDate,
+            String vendor,
+            String type,
+            String quant,
+            String FX,
+            String rate,
+            String maturityDate,
+            String impliedRate
+    )
+    {
+        DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
+        model.addRow(new Object[]{
+                transactionDate,
+                vendor,
+                type,
+                quant,
+                FX,
+                rate,
+                maturityDate,
+                impliedRate
+        });
+    }
+
     public void onAddClicked(ActionEvent event)
     {
-        if (fieldsAreValid() && hasEnoughMoney())
-        {
-            DefaultTableModel model = (DefaultTableModel) transactionTable.getModel();
-            model.addRow(new Object[]{transactionDateInput.getText(),
-                    vendorInput.getText(),
-                    transactionTypeInput.getSelectedItem(),
-                    quantityInput.getText(),
-                    foreignCurrencyInput.getSelectedItem(),
-                    rateInput.getText(),
-                    maturityDateInput.getText(),
-                    "rate goes here",
-            });
-            // todo: use rate calculator
+        presenter.tryToAdd();
+    }
 
-            clearFields();
-        }
-        else
-        {
-            sendErrorMessage();
-        }
+    public void onTypeChange(ActionEvent event)
+    {
+        maturityDateInput.setEnabled(transactionTypeInput.getSelectedItem().equals(Constants.FUTURE.label));
+    }
+
+    public void sendErrorMessage(String message)
+    {
+        JOptionPane.showMessageDialog(this, message,
+                "Error message", JOptionPane.ERROR_MESSAGE);
     }
 
     private void addTableButtons() {
@@ -201,61 +261,14 @@ public class SandboxPanel extends JPanel{
         tableButtonsPanel.add(clearTable);
 
         JButton loadTable = new JButton("Load Table From Database");
+        loadTable.addActionListener(this::loadTableClicked);
         tableButtonsPanel.add(loadTable);
 
         add(tableButtonsPanel);
 
     }
-    private void sendErrorMessage()
-    {
-        JOptionPane.showMessageDialog(this, "Please ensure all fields are valid",
-                "Error message", JOptionPane.ERROR_MESSAGE);
-    }
 
-    private boolean hasEnoughMoney()
-    {
-        // TODO: implement
-        return true;
-    }
-
-    private boolean fieldsAreValid()
-    {
-        boolean validTransactionDate = transactionDateInput.getText() != null;
-        // todo: also confirm that the date is today or earlier
-
-        // todo: decide if we're letting the vendor be empty
-
-        boolean validForwardQuant;
-        try
-        {
-            double forwardQuant = Double.parseDouble(quantityInput.getText());
-            validForwardQuant = forwardQuant > 0;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validForwardQuant = false;
-        }
-
-        boolean validRate;
-        try
-        {
-            double rate = Double.parseDouble(rateInput.getText());
-            validRate = true;
-            // todo: add other conditions?
-        } catch (Exception e)
-        {
-            validRate = false;
-        }
-
-        boolean validMaturityDate = maturityDateInput.getDate() != null && maturityDateInput.getDate().isAfter(transactionDateInput.getDate());
-
-        return validTransactionDate
-                && validForwardQuant
-                && validRate
-                && validMaturityDate;
-    }
-
-    private void clearFields()
+    public void clearFields()
     {
         transactionDateInput.setText("");
         vendorInput.setText("");
@@ -290,8 +303,17 @@ public class SandboxPanel extends JPanel{
     }
 
     private void clearTableClicked(ActionEvent actionEvent) {
+        clearTable();
+    }
+
+    public void clearTable()
+    {
         DefaultTableModel dtm = (DefaultTableModel) transactionTable.getModel();
         dtm.setRowCount(0);
+    }
+
+    private void loadTableClicked(ActionEvent actionEvent) {
+        presenter.fillTransactionTableFromDatabase();
     }
 
     private void onRemoveRowClicked(ActionEvent actionEvent) {

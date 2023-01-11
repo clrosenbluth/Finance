@@ -1,3 +1,5 @@
+package Tools;
+
 import api_connection.FXRateService;
 import api_connection.FXRateServiceFactory;
 import api_data.RealTimeFXData;
@@ -85,8 +87,8 @@ public class PositionAndPresentValueAtTime
                         null :
                         LocalDate.parse(maturityD);
 
-                boolean isSpot = type.equals("spot");
-                boolean isMaturedFuture = type.equals("future")
+                boolean isSpot = type.equals(Constants.SPOT.label);
+                boolean isMaturedFuture = type.equals(Constants.FUTURE.label)
                         && maturityD != null        // added to avoid NPE
                         && maturityLD.isBefore(date);
                 if (isSpot || isMaturedFuture)

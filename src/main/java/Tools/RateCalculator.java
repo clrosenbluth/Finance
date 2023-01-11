@@ -1,3 +1,5 @@
+package Tools;
+
 public class RateCalculator
 {
     public RateCalculator()
