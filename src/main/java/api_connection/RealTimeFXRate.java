@@ -4,10 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 
 public class RealTimeFXRate {
-    @SerializedName("Realtime Currency Exchange Rate")
-    public LinkedTreeMap<String, String> realTimeExchangeRate;
+    public LinkedTreeMap<String, Double> rates;
 
-    public RealTimeFXRate(LinkedTreeMap<String, String> realTimeExchangeRate){
-        this.realTimeExchangeRate = realTimeExchangeRate;
+    public RealTimeFXRate(LinkedTreeMap<String, Double> rates){
+        this.rates = rates;
     }
 }
