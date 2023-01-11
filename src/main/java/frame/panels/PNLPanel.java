@@ -9,7 +9,6 @@ import presenter.PNLPresenter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 

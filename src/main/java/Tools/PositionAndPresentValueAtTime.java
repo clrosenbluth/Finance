@@ -13,10 +13,10 @@ import java.util.HashMap;
 
 public class PositionAndPresentValueAtTime
 {
-    private FXRateService service;
-    private StoredProcs sp;
-    private String[] currencies;
-    private double initialUSD;
+    private final FXRateService service;
+    private final StoredProcs sp;
+    private final String[] currencies;
+    private final double initialUSD;
     private LocalDate date;
     private HashMap<String, Double> position;
     private Double presentValue;
@@ -35,11 +35,7 @@ public class PositionAndPresentValueAtTime
         this.initialUSD = initialUSD;
 
         position = new HashMap<>();
-        position.put("USD", this.initialUSD); // adding separately because not included in currency list
-        for (String curr : this.currencies)
-        {
-            position.put(curr, 0.0);
-        }
+        resetPosition();
 
         records = new ArrayList<>();
 
@@ -50,8 +46,24 @@ public class PositionAndPresentValueAtTime
     {
         this.date = date;
         records = sp.getAllTransactions();
+        resetPosition();
+        resetPresentValue();
         updatePosition(records);
         updatePresentValue(records);
+    }
+
+    private void resetPosition()
+    {
+        position.put("USD", this.initialUSD); // adding separately because not included in currency list
+        for (String curr : this.currencies)
+        {
+            position.put(curr, 0.0);
+        }
+    }
+
+    private void resetPresentValue()
+    {
+        presentValue = 0.0;
     }
 
     public HashMap<String, Double> getPosition()
@@ -101,9 +113,9 @@ public class PositionAndPresentValueAtTime
                     double base = position.get("USD");
                     double fxInDollars = quantity / rate;
                     // make sure it has 2 decimal places
-                    fxInDollars = fxInDollars*100;
-                    fxInDollars = (double)((int) fxInDollars);
-                    fxInDollars = fxInDollars /100;
+                    fxInDollars = fxInDollars * 100;
+                    fxInDollars = ((int) fxInDollars);
+                    fxInDollars = fxInDollars / 100;
 
                     double newBase = base - fxInDollars;
                     position.put("USD", newBase);
@@ -155,7 +167,7 @@ public class PositionAndPresentValueAtTime
                         && t_date.isAfter(date);
                 if (isPendingPurchasedFuture)
                 {
-                    Double quantity = Double.parseDouble(record[2]);
+                    double quantity = Double.parseDouble(record[2]);
                     String currency = record[4];
                     // todo: confirm formula
                     // value = percentage of final amount, where percentage is percent of time passed
