@@ -1,32 +1,37 @@
-//package api_data;
-//
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class FXDataTest {
-//    RealTimeFXData fxData = new RealTimeFXData("JPY");
-//
-//    @Test
-//    void getClose() {
-//        //given
-//
-//        //when
-//        double close = fxData.getClose("2022-12-30");
-//
-//        //then
-//        assertTrue(close > 0);
-//    }
-//
-//    @Test
-//    void getRealTimeFXRate() {
-//        //given
-//
-//        //when
-//        double rate = fxData.getRealTimeFXRate();
-//
-//        //then
-//        assertTrue(rate > 130 && rate < 140);
-//
-//    }
-//}
+package api_data;
+
+import api_connection.FXRateService;
+import api_connection.FXRateServiceFactory;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class FXDataTest {
+    FXRateServiceFactory factory = new FXRateServiceFactory();
+    FXRateService service = factory.getInstance();
+
+    @Test
+    void getClose() {
+        //given
+        DailyCloseData dailyCloseData = new DailyCloseData(service, "2022-12-30", "2023-01-05");
+
+        //when
+        double close = dailyCloseData.getClose("2022-12-30", "JPY");
+
+        //then
+        assertTrue(close > 130 && close < 140);
+    }
+
+    @Test
+    void getRealTimeFXRate() {
+        //given
+        RealTimeFXData fxData = new RealTimeFXData(service);
+
+        //when
+        double realTimeRate = fxData.getRealTimeFXRate("JPY");
+
+        //then
+        assertTrue(realTimeRate > 130 && realTimeRate < 140);
+
+    }
+}
