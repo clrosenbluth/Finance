@@ -4,7 +4,7 @@ import api_connection.FXRateService;
 import api_connection.FXRateServiceFactory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FXDataTest {
     FXRateServiceFactory factory = new FXRateServiceFactory();

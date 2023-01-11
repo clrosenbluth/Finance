@@ -1,6 +1,5 @@
 package api_connection;
 
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 
 public class RealTimeFXRate {
