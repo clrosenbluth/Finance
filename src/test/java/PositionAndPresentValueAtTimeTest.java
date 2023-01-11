@@ -1,7 +1,9 @@
 import Tools.PositionAndPresentValueAtTime;
-import api_data.FXData;
+import api_data.DailyCloseData;
+import api_data.RealTimeFXData;
 import frame.StoredProcs;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.sql.SQLException;
@@ -15,7 +17,8 @@ import static org.mockito.Mockito.when;
 class PositionAndPresentValueAtTimeTest
 {
     StoredProcs sp;
-    FXData fxData;
+    RealTimeFXData realTimeFXData;
+    DailyCloseData dailyCloseData;
     PositionAndPresentValueAtTime calc;
     HashMap<String, Double> expectedPosition;
     HashMap<String, Double> actualPosition;
@@ -27,7 +30,8 @@ class PositionAndPresentValueAtTimeTest
     PositionAndPresentValueAtTimeTest() throws SQLException
     {
         sp = Mockito.mock(StoredProcs.class);
-        fxData = Mockito.mock(FXData.class);
+        realTimeFXData = Mockito.mock(RealTimeFXData.class);
+        dailyCloseData = Mockito.mock(DailyCloseData.class);
         String[] currencies = {"ILS", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNH", "HKD"};
         calc = new PositionAndPresentValueAtTime(
                 LocalDate.now(),
@@ -60,7 +64,7 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction1() throws SQLException
     {
         // given
-        when(fxData.getClose("2016-01-02")).thenReturn(3.00);
+        when(dailyCloseData.getClose("2016-01-02", "ILS")).thenReturn(3.00);
         calc.setDate(LocalDate.of(2016, 1, 2));
         expectedPosition.put("USD", initialUSD - 100.00);
         expectedPosition.put("ILS", 300.00);
@@ -79,7 +83,7 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction2Made() throws SQLException
     {
         // given
-        when(fxData.getClose("2016-01-05")).thenReturn(3.00);
+        when(dailyCloseData.getClose("2016-01-05", "ILS")).thenReturn(3.00);
         calc.setDate(LocalDate.of(2016, 1, 5));
 
         // when
@@ -95,7 +99,7 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction2Matured() throws SQLException
     {
         // given
-        when(fxData.getClose("2016-01-04")).thenReturn(3.00);
+        when(dailyCloseData.getClose("2016-01-04", "ILS")).thenReturn(3.00);
         calc.setDate(LocalDate.of(2017, 1, 4));
 
         // when
@@ -111,7 +115,7 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction3Made() throws SQLException
     {
         // given
-        when(fxData.getClose("2016-01-06")).thenReturn(3.00);
+        when(dailyCloseData.getClose("2016-01-06", "ILS")).thenReturn(3.00);
         calc.setDate(LocalDate.of(2016, 1, 6));
 
         // when
@@ -127,7 +131,7 @@ class PositionAndPresentValueAtTimeTest
     public void getInfoAfterTransaction3Matured() throws SQLException
     {
         // given
-        when(fxData.getClose("2018-01-06")).thenReturn(3.00);
+        when(dailyCloseData.getClose("2018-01-06", "ILS")).thenReturn(3.00);
         calc.setDate(LocalDate.of(2018, 1, 6));
 
         // when

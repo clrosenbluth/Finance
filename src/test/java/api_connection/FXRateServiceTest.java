@@ -16,17 +16,17 @@ class FXRateServiceTest {
         //given
 
         //when
-        TimeSeries timeSeries = null;
+        DailyFXRate dailyFXRate = null;
         try{
-            Response<TimeSeries> response = service.getDailyFXData("EUR").execute();
-            timeSeries = response.body();
+            Response<DailyFXRate> response = service.getDailyFXData("2022-01-01", "2022-01-11").execute();
+            dailyFXRate = response.body();
         } catch (IOException e){
             e.printStackTrace();
         }
 
         //then
-        assertNotNull(timeSeries);
-        assertTrue(timeSeries.timeSeriesFX.size() > 2000);
+        assertNotNull(dailyFXRate);
+        assertEquals(11, dailyFXRate.rates.size());
     }
 
     @Test
@@ -36,7 +36,7 @@ class FXRateServiceTest {
         //when
         RealTimeFXRate realTimeFXRate= null;
         try{
-            Response<RealTimeFXRate> response = service.getRealTimeFXRate("EUR").execute();
+            Response<RealTimeFXRate> response = service.getRealTimeFXRate().execute();
             realTimeFXRate = response.body();
         } catch (IOException e){
             e.printStackTrace();
@@ -44,7 +44,7 @@ class FXRateServiceTest {
 
         //then
         assertNotNull(realTimeFXRate);
-        assertEquals(9, realTimeFXRate.realTimeExchangeRate.size());
+        assertEquals(169, realTimeFXRate.rates.size());
 
     }
 }

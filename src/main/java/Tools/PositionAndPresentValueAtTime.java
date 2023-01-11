@@ -1,10 +1,10 @@
 package Tools;
 
-import api_data.FXData;
+import api_connection.FXRateService;
+import api_connection.FXRateServiceFactory;
+import api_data.RealTimeFXData;
 import frame.StoredProcs;
 
-import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 public class PositionAndPresentValueAtTime
 {
+    private FXRateService service;
     private StoredProcs sp;
     private String[] currencies;
     private double initialUSD;
@@ -27,6 +28,8 @@ public class PositionAndPresentValueAtTime
                                          double initialUSD)
             throws SQLException
     {
+        this.service = new FXRateServiceFactory().getInstance();
+
         this.sp = sp;
         this.currencies = currencies;
         this.initialUSD = initialUSD;
@@ -125,8 +128,8 @@ public class PositionAndPresentValueAtTime
         for (String curr : currencies)
         {
             double pos = position.get(curr);
-            FXData fxData = new FXData(curr);
-            double rate = fxData.getRealTimeFXRate();
+            RealTimeFXData fxData = new RealTimeFXData(service);
+            double rate = fxData.getRealTimeFXRate(curr);
             value += pos / rate;
         }
 
@@ -161,8 +164,8 @@ public class PositionAndPresentValueAtTime
                     double elapsedPercentage = passedTime/fullTime;
                     double valueAccruedInFX = elapsedPercentage * quantity;
 
-                    FXData fxData = new FXData(currency);
-                    double rate = fxData.getRealTimeFXRate();
+                    RealTimeFXData fxData = new RealTimeFXData(service);
+                    double rate = fxData.getRealTimeFXRate(currency);
 
                     value += valueAccruedInFX / rate;
                 }

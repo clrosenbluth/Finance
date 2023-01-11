@@ -8,7 +8,7 @@ public class FXRateServiceFactory {
     public FXRateService getInstance() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.alphavantage.co/")
+                .baseUrl("https://api.exchangerate.host/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
